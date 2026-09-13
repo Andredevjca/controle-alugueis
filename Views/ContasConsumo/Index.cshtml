@@ -1,0 +1,63 @@
+@model ContaConsumoListaViewModel
+<div class="page-header">
+    <div>
+        <h1>Contas de água e luz</h1>
+        <p class="text-muted mb-0">Consumo, vencimentos e pagamentos</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-success btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua"><i class="bi bi-droplet"></i> Água</a>
+        <a class="btn btn-outline-secondary btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz"><i class="bi bi-lightning"></i> Luz</a>
+    </div>
+</div>
+<form class="content-card p-3 mb-3" method="get">
+    <div class="row g-2">
+        <div class="col-md-2">
+            <select name="tipo" class="form-select">
+                <option value="">Tipo</option>
+                <option value="@TipoConsumo.Agua">Água</option>
+                <option value="@TipoConsumo.Luz">Luz</option>
+            </select>
+        </div>
+        <div class="col-md-3"><select name="casaId" class="form-select" asp-items="Model.Casas"><option value="">Casa</option></select></div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">Status</option>
+                <option>Pendente</option><option>Pago</option><option>Atrasado</option><option>Cancelado</option>
+            </select>
+        </div>
+        <div class="col-md-3"><input name="busca" value="@Model.Busca" class="form-control" placeholder="Buscar..." /></div>
+        <div class="col-md-2"><button class="btn btn-outline-secondary w-100">Filtrar</button></div>
+    </div>
+</form>
+<div class="content-card p-3">
+    <div class="table-responsive">
+        <table class="table table-modern">
+            <thead><tr><th>Casa</th><th>Tipo</th><th>Referência</th><th>Vencimento</th><th>Valor</th><th>Consumo</th><th>Pagamento</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.Itens)
+            {
+                <tr>
+                    <td>@item.CasaNome</td>
+                    <td>@item.Tipo</td>
+                    <td>@item.Referencia</td>
+                    <td>@Formatador.Data(item.Vencimento)</td>
+                    <td>@Formatador.Moeda(item.Valor)</td>
+                    <td>@(item.Consumo?.ToString("N3") ?? "-")</td>
+                    <td>@Formatador.Data(item.DataPagamento)</td>
+                    <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                        @if (item.Status is not ("Pago" or "Cancelado"))
+                        {
+                            <form asp-action="Pagar" asp-route-id="@item.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-success">Pagar</button></form>
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Cancelar", new { id = item.Id })" data-mensagem="Deseja cancelar esta conta?"><i class="bi bi-trash"></i></button>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+@{ ViewBag.Pagina = Model.Pagina; }
+<partial name="_Paginacao" model="Model.TotalPaginas" />

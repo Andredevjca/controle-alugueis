@@ -1,0 +1,72 @@
+@model LoginViewModel
+@{
+    Layout = "_LayoutLogin";
+    ViewData["Title"] = "Entrar";
+}
+<div class="login-wrap">
+    <aside class="login-aside">
+        <div>
+            <div class="login-brand">
+                <div class="login-logo"><i class="bi bi-houses"></i></div>
+                <div>
+                    <strong>Controle de Aluguéis</strong>
+                    <small>Administração imobiliária</small>
+                </div>
+            </div>
+            <div class="login-hide">
+                <h2>Painel administrativo</h2>
+                <p>Gerencie casas, contratos, inquilinos e o financeiro em um só lugar.</p>
+                <ul class="login-features">
+                    <li><i class="bi bi-house"></i> Casas e contratos</li>
+                    <li><i class="bi bi-people"></i> Histórico de inquilinos</li>
+                    <li><i class="bi bi-cash-stack"></i> Receitas e despesas</li>
+                    <li><i class="bi bi-bar-chart"></i> Relatórios e vencimentos</li>
+                </ul>
+            </div>
+        </div>
+        <div class="login-footer">Acesso restrito a usuários autorizados</div>
+    </aside>
+    <div class="login-panel">
+        <header class="login-topbar">
+            <div>
+                <span>Painel administrativo</span>
+                <strong>Entrar</strong>
+            </div>
+        </header>
+        <main class="login-main">
+            <div class="login-card">
+                <h3>Acessar o sistema</h3>
+                <p class="sub">Informe seu e-mail e senha para continuar</p>
+                <form asp-action="Entrar" method="post">
+                    @Html.AntiForgeryToken()
+                    <div asp-validation-summary="ModelOnly" class="erro mb-3"></div>
+                    <div class="mb-3">
+                        <label asp-for="Email"></label>
+                        <div class="campo">
+                            <span><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" placeholder="admin@sistema.com" autocomplete="username" />
+                        </div>
+                        <span asp-validation-for="Email" class="erro"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Senha"></label>
+                        <div class="campo">
+                            <span><i class="bi bi-lock"></i></span>
+                            <input asp-for="Senha" autocomplete="current-password" />
+                        </div>
+                        <span asp-validation-for="Senha" class="erro"></span>
+                    </div>
+                    <label class="login-check">
+                        <input asp-for="Lembrar" />
+                        <span>Lembrar-me</span>
+                    </label>
+                    <button type="submit" class="login-btn">Entrar</button>
+                </form>
+                <div class="login-hint">
+                    Usuário inicial: <strong>admin@sistema.com</strong><br />
+                    Senha: <strong>Admin@123</strong>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

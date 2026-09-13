@@ -1,0 +1,35 @@
+@model ContratoViewModel
+<div class="page-header"><div><h1>@(Model.Id==0?"Novo contrato":"Editar contrato")</h1></div></div>
+<form method="post" class="content-card p-4">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label asp-for="CasaId" class="form-label"></label>
+            <select asp-for="CasaId" asp-items="Model.Casas" class="form-select"><option value="">Selecione</option></select>
+            <span asp-validation-for="CasaId" class="text-danger"></span>
+            <div id="infoCasa" class="alert alert-light mt-2 d-none"></div>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="InquilinoId" class="form-label"></label>
+            <select asp-for="InquilinoId" asp-items="Model.Inquilinos" class="form-select"><option value="">Selecione</option></select>
+            <span asp-validation-for="InquilinoId" class="text-danger"></span>
+            <div id="infoInquilino" class="alert alert-light mt-2 d-none"></div>
+        </div>
+        <div class="col-md-4"><label asp-for="Numero" class="form-label"></label><input asp-for="Numero" class="form-control" /><span asp-validation-for="Numero" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="DataInicio" class="form-label"></label><input asp-for="DataInicio" type="date" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="DataTermino" class="form-label"></label><input asp-for="DataTermino" type="date" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="ValorAluguel" class="form-label"></label><input asp-for="ValorAluguel" class="form-control" /><span asp-validation-for="ValorAluguel" class="text-danger"></span></div>
+        <div class="col-md-4"><label asp-for="DiaVencimento" class="form-label"></label><input asp-for="DiaVencimento" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="ValorCaucao" class="form-label"></label><input asp-for="ValorCaucao" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="MesesCaucao" class="form-label"></label><input asp-for="MesesCaucao" class="form-control" /></div>
+        <div class="col-md-4"><label asp-for="IndiceReajuste" class="form-label"></label><input asp-for="IndiceReajuste" class="form-control" /></div>
+        <div class="col-md-2"><label asp-for="PercentualMulta" class="form-label"></label><input asp-for="PercentualMulta" class="form-control" /></div>
+        <div class="col-md-2"><label asp-for="PercentualJuros" class="form-label"></label><input asp-for="PercentualJuros" class="form-control" /></div>
+        <div class="col-12"><label asp-for="Observacoes" class="form-label"></label><textarea asp-for="Observacoes" class="form-control" rows="3"></textarea></div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-success btn-modern"><i class="bi bi-save"></i> Salvar</button>
+        <a class="btn btn-outline-secondary btn-modern" asp-action="Index">Cancelar</a>
+    </div>
+</form>

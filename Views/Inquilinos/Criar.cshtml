@@ -1,0 +1,23 @@
+@model InquilinoViewModel
+<div class="page-header"><div><h1>@(Model.Id==0?"Novo inquilino":"Editar inquilino")</h1></div></div>
+<form method="post" class="content-card p-4">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="NomeCompleto" class="form-label"></label><input asp-for="NomeCompleto" class="form-control" /><span asp-validation-for="NomeCompleto" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="Cpf" class="form-label"></label><input asp-for="Cpf" class="form-control" data-mascara="cpf" /><span asp-validation-for="Cpf" class="text-danger"></span></div>
+        <div class="col-md-3"><label asp-for="Rg" class="form-label"></label><input asp-for="Rg" class="form-control" /></div>
+        <div class="col-md-3"><label asp-for="DataNascimento" class="form-label"></label><input asp-for="DataNascimento" class="form-control" type="date" /></div>
+        <div class="col-md-3"><label asp-for="Telefone" class="form-label"></label><input asp-for="Telefone" class="form-control" data-mascara="telefone" /></div>
+        <div class="col-md-3"><label asp-for="Whatsapp" class="form-label"></label><input asp-for="Whatsapp" class="form-control" data-mascara="telefone" /></div>
+        <div class="col-md-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger"></span></div>
+        <div class="col-md-6"><label asp-for="Profissao" class="form-label"></label><input asp-for="Profissao" class="form-control" /></div>
+        <div class="col-md-6"><label asp-for="Renda" class="form-label"></label><input asp-for="Renda" class="form-control" /></div>
+        <div class="col-12"><label asp-for="EnderecoAnterior" class="form-label"></label><input asp-for="EnderecoAnterior" class="form-control" /></div>
+        <div class="col-12"><label asp-for="Observacoes" class="form-label"></label><textarea asp-for="Observacoes" class="form-control" rows="3"></textarea></div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-success btn-modern"><i class="bi bi-save"></i> Salvar</button>
+        <a class="btn btn-outline-secondary btn-modern" asp-action="Index">Cancelar</a>
+    </div>
+</form>

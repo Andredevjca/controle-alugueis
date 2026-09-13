@@ -1,0 +1,19 @@
+@model EncerrarContratoViewModel
+<div class="page-header"><div><h1>Encerrar contrato</h1></div></div>
+<div class="content-card p-4">
+    <p>O histórico do inquilino será preservado. O contrato passará para o status <strong>Encerrado</strong>.</p>
+    <p>Contrato <strong>@Model.Numero</strong> · Casa <strong>@Model.CasaNome</strong> · Inquilino <strong>@Model.InquilinoNome</strong></p>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Numero" />
+        <input type="hidden" asp-for="CasaNome" />
+        <input type="hidden" asp-for="InquilinoNome" />
+        <div class="mb-3 col-md-4">
+            <label asp-for="DataSaida" class="form-label"></label>
+            <input asp-for="DataSaida" type="date" class="form-control" />
+        </div>
+        <button class="btn btn-danger btn-modern">Confirmar encerramento</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+    </form>
+</div>

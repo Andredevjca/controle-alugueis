@@ -1,0 +1,24 @@
+@model ObservacaoViewModel
+<div class="page-header"><div><h1>Nova observação</h1></div></div>
+<form method="post" class="content-card p-4">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="row g-3">
+        <div class="col-md-6"><label asp-for="Titulo" class="form-label"></label><input asp-for="Titulo" class="form-control" /><span asp-validation-for="Titulo" class="text-danger"></span></div>
+        <div class="col-md-6">
+            <label asp-for="Tipo" class="form-label"></label>
+            <select asp-for="Tipo" class="form-select">
+                <option>Casa</option><option>Contrato</option><option>Inquilino</option>
+                <option>Financeiro</option><option>Água</option><option>Luz</option><option>Manutenção</option>
+            </select>
+        </div>
+        <div class="col-md-4"><label asp-for="CasaId" class="form-label"></label><select asp-for="CasaId" asp-items="Model.Casas" class="form-select"><option value="">Selecione</option></select></div>
+        <div class="col-md-4"><label asp-for="ContratoId" class="form-label"></label><select asp-for="ContratoId" asp-items="Model.Contratos" class="form-select"><option value="">Selecione</option></select></div>
+        <div class="col-md-4"><label asp-for="InquilinoId" class="form-label"></label><select asp-for="InquilinoId" asp-items="Model.Inquilinos" class="form-select"><option value="">Selecione</option></select></div>
+        <div class="col-12"><label asp-for="Descricao" class="form-label"></label><textarea asp-for="Descricao" class="form-control" rows="5"></textarea><span asp-validation-for="Descricao" class="text-danger"></span></div>
+    </div>
+    <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-success btn-modern"><i class="bi bi-save"></i> Salvar</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Cancelar</a>
+    </div>
+</form>

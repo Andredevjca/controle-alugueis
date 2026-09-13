@@ -1,0 +1,53 @@
+# Compilacao, restauracao e publicacao do .NET
+[Bb]in/
+[Oo]bj/
+/artifacts/
+/publish/
+*.nupkg
+*.snupkg
+
+# Configuracoes e caches locais das IDEs
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.sln.iml
+
+# Perfis de publicacao podem conter credenciais locais
+Properties/PublishProfiles/
+
+# Resultados de testes e cobertura
+TestResults/
+coverage/
+*.trx
+*.coverage
+*.coveragexml
+
+# Logs e arquivos temporarios
+logs/
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+~$*
+
+# Variaveis de ambiente e configuracoes privadas locais
+.env
+.env.*
+!.env.example
+!.env.sample
+appsettings.Local.json
+appsettings.*.Local.json
+
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Manter no Git: codigo-fonte, Database/schema.sql, appsettings.json,
+# appsettings.Development.json e wwwroot/lib (dependencias estaticas
+# necessarias ao site, sem restauracao automatica configurada).

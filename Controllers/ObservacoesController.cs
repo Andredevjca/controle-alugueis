@@ -1,0 +1,190 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SistemaAlugueis.Helpers;
+using SistemaAlugueis.Models;
+using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Services;
+using SistemaAlugueis.ViewModels;
+
+namespace SistemaAlugueis.Controllers;
+
+public class ObservacoesController(ServicoObservacao servico, ServicoCasa casas, ServicoInquilino inquilinos, ServicoContrato contratos) : Controller
+{
+    public async Task<IActionResult> Index(string? tipo, int? casaId, string? busca)
+    {
+        ViewData["Title"] = "Observações";
+        return View(new ObservacaoListaViewModel
+        {
+            Itens = await servico.ListarAsync(tipo, casaId, busca),
+            Tipo = tipo,
+            CasaId = casaId,
+            Busca = busca,
+            Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId))
+        });
+    }
+
+    public async Task<IActionResult> Criar(int? casaId, string? tipo)
+    {
+        ViewData["Title"] = "Nova observação";
+        return View(await Montar(new ObservacaoViewModel { CasaId = casaId, Tipo = tipo ?? TipoObservacao.Casa }));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Criar(ObservacaoViewModel modelo)
+    {
+        if (!ModelState.IsValid) return View(await Montar(modelo));
+        var usuarioId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : (int?)null;
+        await servico.SalvarAsync(modelo, usuarioId);
+        TempData["Sucesso"] = "Observação registrada.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Excluir(int id)
+    {
+        await servico.ExcluirAsync(id);
+        TempData["Sucesso"] = "Observação excluída.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<ObservacaoViewModel> Montar(ObservacaoViewModel modelo)
+    {
+        modelo.Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
+        modelo.Inquilinos = (await inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
+        modelo.Contratos = (await contratos.ListarTodosAsync()).Select(c => new SelectListItem($"{c.Numero} - {c.CasaNome}", c.Id.ToString(), c.Id == modelo.ContratoId));
+        return modelo;
+    }
+}
+
+public class RelatoriosController(ServicoRelatorio servico, ServicoCasa casas, ServicoInquilino inquilinos) : Controller
+{
+    public async Task<IActionResult> Index(RelatorioViewModel filtro)
+    {
+        ViewData["Title"] = "Relatórios";
+        filtro.TipoRelatorio = string.IsNullOrWhiteSpace(filtro.TipoRelatorio) ? "casas" : filtro.TipoRelatorio;
+        filtro.Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == filtro.CasaId));
+        filtro.Inquilinos = (await inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == filtro.InquilinoId));
+        return View(await servico.GerarAsync(filtro));
+    }
+}
+
+public class CategoriasController(IRepositorioCategoria repositorio) : Controller
+{
+    public async Task<IActionResult> Index()
+    {
+        ViewData["Title"] = "Categorias";
+        return View(await repositorio.ListarAsync());
+    }
+
+    public IActionResult Criar()
+    {
+        ViewData["Title"] = "Nova categoria";
+        return View(new CategoriaViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Criar(CategoriaViewModel modelo)
+    {
+        if (!ModelState.IsValid) return View(modelo);
+        await repositorio.InserirAsync(new CategoriaFinanceira { Nome = modelo.Nome, Tipo = modelo.Tipo, Ativo = true });
+        TempData["Sucesso"] = "Categoria cadastrada.";
+        return RedirectToAction(nameof(Index));
+    }
+}
+
+public class UsuariosController(IRepositorioUsuario repositorio) : Controller
+{
+    public async Task<IActionResult> Index()
+    {
+        ViewData["Title"] = "Usuários";
+        return View(await repositorio.ListarAsync());
+    }
+
+    public IActionResult Criar()
+    {
+        ViewData["Title"] = "Novo usuário";
+        return View(new UsuarioViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Criar(UsuarioViewModel modelo)
+    {
+        if (string.IsNullOrWhiteSpace(modelo.Senha))
+        {
+            ModelState.AddModelError(nameof(modelo.Senha), "A senha é obrigatória.");
+        }
+
+        if (!ModelState.IsValid) return View(modelo);
+        await repositorio.InserirAsync(new Usuario
+        {
+            Nome = modelo.Nome,
+            Email = modelo.Email,
+            SenhaHash = BCrypt.Net.BCrypt.HashPassword(modelo.Senha),
+            Perfil = modelo.Perfil,
+            Ativo = true
+        });
+        TempData["Sucesso"] = "Usuário cadastrado.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    public async Task<IActionResult> Editar(int id)
+    {
+        var usuario = await repositorio.ObterPorIdAsync(id);
+        if (usuario == null) return NotFound();
+        ViewData["Title"] = "Editar usuário";
+        return View(new UsuarioViewModel
+        {
+            Id = usuario.Id,
+            Nome = usuario.Nome,
+            Email = usuario.Email,
+            Perfil = usuario.Perfil,
+            Ativo = usuario.Ativo
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Editar(int id, UsuarioViewModel modelo)
+    {
+        modelo.Id = id;
+        if (!ModelState.IsValid) return View(modelo);
+        await repositorio.AtualizarAsync(new Usuario
+        {
+            Id = id,
+            Nome = modelo.Nome,
+            Email = modelo.Email,
+            Perfil = modelo.Perfil,
+            Ativo = modelo.Ativo
+        });
+        if (!string.IsNullOrWhiteSpace(modelo.Senha))
+        {
+            await repositorio.AtualizarSenhaAsync(id, BCrypt.Net.BCrypt.HashPassword(modelo.Senha));
+        }
+
+        TempData["Sucesso"] = "Usuário atualizado.";
+        return RedirectToAction(nameof(Index));
+    }
+}
+
+public class ConfiguracoesController(IRepositorioConfiguracao repositorio) : Controller
+{
+    public async Task<IActionResult> Index()
+    {
+        ViewData["Title"] = "Configurações";
+        return View(new ConfiguracaoViewModel { Itens = await repositorio.ListarAsync() });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index(int id, string? valor)
+    {
+        await repositorio.AtualizarAsync(id, valor);
+        TempData["Sucesso"] = "Configuração atualizada.";
+        return RedirectToAction(nameof(Index));
+    }
+}

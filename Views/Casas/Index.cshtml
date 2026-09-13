@@ -1,0 +1,57 @@
+@model CasaListaViewModel
+<div class="page-header">
+    <div>
+        <h1>Casas</h1>
+        <p class="text-muted mb-0">Cadastro e situação dos imóveis</p>
+    </div>
+    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="bi bi-plus-lg"></i> Nova casa</a>
+</div>
+<form class="content-card p-3 mb-3" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-6">
+            <label class="form-label">Buscar casas...</label>
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input name="busca" value="@Model.Busca" class="form-control" placeholder="Nome, endereço, bairro..." />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="">Todos</option>
+                <option value="@StatusCasa.Alugada" selected="@(Model.Status == StatusCasa.Alugada)">Alugada</option>
+                <option value="@StatusCasa.Disponivel" selected="@(Model.Status == StatusCasa.Disponivel)">Disponível</option>
+                <option value="@StatusCasa.Manutencao" selected="@(Model.Status == StatusCasa.Manutencao)">Manutenção</option>
+            </select>
+        </div>
+        <div class="col-md-3"><button class="btn btn-outline-secondary btn-modern w-100">Filtrar</button></div>
+    </div>
+</form>
+<div class="content-card p-3">
+    <div class="table-responsive">
+        <table class="table table-modern">
+            <thead><tr><th>Casa</th><th>Endereço</th><th>Valor aluguel</th><th>Inquilino atual</th><th>Status</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.Itens)
+            {
+                <tr>
+                    <td>@item.Nome</td>
+                    <td>@item.EnderecoCompleto</td>
+                    <td>@Formatador.Moeda(item.ValorAluguel)</td>
+                    <td>@(item.InquilinoAtual ?? "-")</td>
+                    <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id" title="Visualizar"><i class="bi bi-eye"></i></a>
+                        <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Excluir", new { id = item.Id })" data-mensagem="Tem certeza que deseja excluir esta casa?"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+@{
+    ViewBag.Pagina = Model.Pagina;
+}
+<partial name="_Paginacao" model="Model.TotalPaginas" />

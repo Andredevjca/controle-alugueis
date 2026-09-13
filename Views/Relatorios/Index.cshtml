@@ -1,0 +1,81 @@
+@model RelatorioViewModel
+<div class="page-header">
+    <div>
+        <h1>Relatórios</h1>
+        <p class="text-muted mb-0">Consultas gerenciais do portfólio de imóveis</p>
+    </div>
+</div>
+<form method="get" class="content-card p-3 mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <label class="form-label">Relatório</label>
+            <select class="form-select" asp-for="TipoRelatorio">
+                <option value="casas">Casas cadastradas</option>
+                <option value="casas-alugadas">Casas alugadas</option>
+                <option value="casas-disponiveis">Casas disponíveis</option>
+                <option value="inquilinos-atuais">Inquilinos atuais</option>
+                <option value="historico-inquilinos">Histórico de inquilinos</option>
+                <option value="contratos-ativos">Contratos ativos</option>
+                <option value="contratos-encerrados">Contratos encerrados</option>
+                <option value="alugueis-recebidos">Aluguéis recebidos</option>
+                <option value="alugueis-pendentes">Aluguéis pendentes</option>
+                <option value="alugueis-atrasados">Aluguéis atrasados</option>
+                <option value="receitas">Receitas</option>
+                <option value="despesas">Despesas</option>
+                <option value="saldo">Saldo</option>
+                <option value="contas-agua">Contas de água</option>
+                <option value="contas-luz">Contas de energia</option>
+            </select>
+        </div>
+        <div class="col-md-2"><label class="form-label">Início</label><input type="date" name="dataInicio" value="@(Model.DataInicio?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Fim</label><input type="date" name="dataFim" value="@(Model.DataFim?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+        <div class="col-md-2"><label class="form-label">Casa</label><select name="casaId" class="form-select" asp-items="Model.Casas"><option value="">Todas</option></select></div>
+        <div class="col-md-2"><label class="form-label">Inquilino</label><select name="inquilinoId" class="form-select" asp-items="Model.Inquilinos"><option value="">Todos</option></select></div>
+        <div class="col-md-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select">
+                <option value="">Todos</option>
+                <option>Pendente</option><option>Pago</option><option>Atrasado</option>
+                <option>Ativo</option><option>Encerrado</option>
+                <option>Alugada</option><option>Disponível</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end"><button class="btn btn-success btn-modern w-100"><i class="bi bi-bar-chart"></i> Gerar</button></div>
+    </div>
+</form>
+<div class="content-card p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 mb-0">@Model.Titulo</h2>
+        @if (Model.Total.HasValue)
+        {
+            <strong>Total: @Formatador.Moeda(Model.Total)</strong>
+        }
+    </div>
+    <div class="table-responsive">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    @foreach (var coluna in Model.Colunas)
+                    {
+                        <th>@coluna</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var linha in Model.Linhas)
+            {
+                <tr>
+                    @foreach (var coluna in Model.Colunas)
+                    {
+                        <td>@(linha.ContainsKey(coluna) ? linha[coluna] : "-")</td>
+                    }
+                </tr>
+            }
+            @if (!Model.Linhas.Any())
+            {
+                <tr><td colspan="@Math.Max(1, Model.Colunas.Count())" class="text-muted">Nenhum registro encontrado para os filtros informados.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>

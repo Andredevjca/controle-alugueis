@@ -1,0 +1,20 @@
+@model int
+@{
+    var pagina = (int)(ViewBag.Pagina ?? 1);
+    var total = Model;
+    var acao = ViewContext.RouteData.Values["action"]?.ToString();
+    var controlador = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+@if (total > 1)
+{
+    <nav class="mt-3">
+        <ul class="pagination">
+            @for (var i = 1; i <= total; i++)
+            {
+                <li class="page-item @(i == pagina ? "active" : "")">
+                    <a class="page-link" asp-controller="@controlador" asp-action="@acao" asp-all-route-data="@(ViewBag.Query as Dictionary<string, string>)" asp-route-pagina="@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

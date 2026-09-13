@@ -1,0 +1,21 @@
+@model IEnumerable<CategoriaFinanceira>
+<div class="page-header">
+    <div><h1>Categorias</h1><p class="text-muted mb-0">Classificação de receitas e despesas</p></div>
+    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="bi bi-plus-lg"></i> Nova categoria</a>
+</div>
+<div class="content-card p-3">
+    <div class="table-responsive">
+        <table class="table table-modern">
+            <thead><tr><th>Nome</th><th>Tipo</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nome</td>
+                    <td><span class="status-badge @(item.Tipo == "Receita" ? "status-pago" : "status-pendente")">@item.Tipo</span></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
