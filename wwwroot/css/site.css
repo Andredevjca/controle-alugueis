@@ -15,6 +15,7 @@
   --card-shadow: 0 8px 24px rgba(21, 32, 51, 0.08);
   --radius: 6px;
   --app-button-radius: 4px;
+  --app-input-radius: 4px;
   --app-button-padding-y: 0.25rem;
   --app-button-padding-x: 0.625rem;
 }
@@ -212,7 +213,7 @@ body.sidebar-collapsed .app-content {
 .form-control,
 .form-select {
   border-color: #d7e0ea;
-  border-radius: 10px;
+  border-radius: var(--app-input-radius);
 }
 
 .form-control:focus,
@@ -239,6 +240,7 @@ body.sidebar-collapsed .app-content {
 }
 
 .input-group-text {
+  border-radius: var(--app-input-radius);
   border-color: #d7e0ea;
   background: #f7f9fc;
   color: #5b6b7c;
@@ -500,7 +502,7 @@ body.login-body {
 .login-card .form-control,
 .login-card .form-check-input,
 .login-card .input-group-text {
-  border-radius: 10px;
+  border-radius: var(--app-input-radius);
 }
 
 .login-card .input-group-text {
