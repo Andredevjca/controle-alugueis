@@ -1,4 +1,6 @@
 :root {
+  --bs-font-sans-serif: "Nunito", system-ui, -apple-system, sans-serif;
+  --bs-body-font-family: var(--bs-font-sans-serif);
   --sidebar-width: 260px;
   --sidebar-bg: #152033;
   --sidebar-bg-hover: #1e2d45;
@@ -18,7 +20,7 @@ html, body {
 body.app-body {
   background: var(--page-bg);
   color: #1f2a37;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: var(--bs-body-font-family);
 }
 
 .sidebar {
@@ -319,7 +321,7 @@ body.sidebar-collapsed .app-content {
 body.login-body {
   background: var(--page-bg);
   color: #1f2a37;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: var(--bs-body-font-family);
   min-height: 100vh;
 }
 
