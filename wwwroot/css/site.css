@@ -1,4 +1,7 @@
 :root {
+  --app-font-size: 0.75rem;
+  --app-title-size: 1rem;
+  --bs-body-font-size: var(--app-font-size);
   --bs-font-sans-serif: "Nunito", system-ui, -apple-system, sans-serif;
   --bs-body-font-family: var(--bs-font-sans-serif);
   --sidebar-width: 260px;
@@ -9,6 +12,49 @@
   --page-bg: #f3f5f8;
   --card-shadow: 0 8px 24px rgba(21, 32, 51, 0.08);
   --radius: 14px;
+}
+
+/* Tipografia compartilhada: textos em 12px e titulos de tela em 16px.
+   Manter o tamanho raiz preserva os espacamentos rem do Bootstrap. */
+body {
+  font-size: var(--app-font-size);
+}
+
+.btn {
+  --bs-btn-font-size: var(--app-font-size);
+}
+
+.dropdown-menu {
+  --bs-dropdown-font-size: var(--app-font-size);
+}
+
+.pagination {
+  --bs-pagination-font-size: var(--app-font-size);
+}
+
+.form-control,
+.form-select,
+.input-group-text,
+.input-group > .form-control,
+.input-group > .form-select,
+.input-group > .input-group-text,
+.input-group > .btn,
+small,
+.small,
+.form-text,
+.invalid-feedback,
+.valid-feedback,
+.badge {
+  font-size: var(--app-font-size);
+}
+
+h1, .h1 {
+  font-size: var(--app-title-size);
+}
+
+h2, h3, h4, h5, h6,
+.h2, .h3, .h4, .h5, .h6 {
+  font-size: var(--app-font-size);
 }
 
 * { box-sizing: border-box; }
@@ -61,7 +107,7 @@ body.app-body {
   height: 40px;
 }
 
-.sidebar-brand strong { color: #fff; display: block; font-size: .95rem; }
+.sidebar-brand strong { color: #fff; display: block; font-size: var(--app-font-size); }
 .sidebar-brand small { color: #8ea0b5; }
 
 .sidebar-menu {
@@ -73,7 +119,7 @@ body.app-body {
 }
 
 .sidebar-menu .menu-label {
-  font-size: .7rem;
+  font-size: var(--app-font-size);
   letter-spacing: .08em;
   text-transform: uppercase;
   color: #7d8ea3;
@@ -212,7 +258,7 @@ body.sidebar-collapsed .app-content {
 }
 
 .page-header h1 {
-  font-size: 1.45rem;
+  font-size: var(--app-title-size);
   font-weight: 700;
   margin: 0;
 }
@@ -231,12 +277,12 @@ body.sidebar-collapsed .app-content {
 
 .card-dashboard .label {
   color: #6b7c90;
-  font-size: .85rem;
+  font-size: var(--app-font-size);
   margin-bottom: .35rem;
 }
 
 .card-dashboard .value {
-  font-size: 1.55rem;
+  font-size: var(--app-font-size);
   font-weight: 700;
 }
 
@@ -256,14 +302,14 @@ body.sidebar-collapsed .app-content {
 .bg-soft-purple { background: #f3eaff; color: #6d28d9; }
 
 .card-imovel { padding: 1.15rem; height: 100%; }
-.card-imovel h3 { font-size: 1.05rem; margin-bottom: .25rem; }
+.card-imovel h3 { font-size: var(--app-font-size); margin-bottom: .25rem; }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
   padding: .2rem .65rem;
-  font-size: .75rem;
+  font-size: var(--app-font-size);
   font-weight: 600;
 }
 
@@ -277,7 +323,7 @@ body.sidebar-collapsed .app-content {
   background: #f7f9fc;
   color: #5b6b7c;
   font-weight: 600;
-  font-size: .8rem;
+  font-size: var(--app-font-size);
   text-transform: uppercase;
   letter-spacing: .03em;
   border-bottom: 1px solid #e6ebf1;
@@ -350,7 +396,7 @@ body.login-body {
 
 .login-aside h1 {
   color: #fff;
-  font-size: .95rem;
+  font-size: var(--app-font-size);
   font-weight: 700;
   margin: 0;
 }
@@ -361,7 +407,7 @@ body.login-body {
 
 .login-aside .login-copy h2 {
   color: #fff;
-  font-size: 1.45rem;
+  font-size: var(--app-title-size);
   font-weight: 700;
   margin: 2rem 0 .75rem;
 }
@@ -392,7 +438,7 @@ body.login-body {
 
 .login-aside .login-footer {
   color: #8ea0b5;
-  font-size: .8rem;
+  font-size: var(--app-font-size);
 }
 
 .login-panel {
@@ -411,7 +457,7 @@ body.login-body {
 }
 
 .login-topbar .text-muted {
-  font-size: .8rem;
+  font-size: var(--app-font-size);
 }
 
 .login-main {
@@ -432,7 +478,7 @@ body.login-body {
 }
 
 .login-card h2 {
-  font-size: 1.45rem;
+  font-size: var(--app-title-size);
   font-weight: 700;
   margin: 0 0 .25rem;
 }
@@ -442,7 +488,7 @@ body.login-body {
   border-radius: 10px;
   padding: .85rem 1rem;
   color: #5b6b7c;
-  font-size: .8rem;
+  font-size: var(--app-font-size);
 }
 
 .login-card .form-control,
