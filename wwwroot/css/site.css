@@ -1,6 +1,8 @@
 :root {
   --app-font-size: 0.75rem;
   --app-title-size: 1rem;
+  --app-icon-size: 0.875rem;
+  --app-brand-icon-size: 1rem;
   --bs-body-font-size: var(--app-font-size);
   --bs-font-sans-serif: "Nunito", system-ui, -apple-system, sans-serif;
   --bs-body-font-family: var(--bs-font-sans-serif);
@@ -11,7 +13,7 @@
   --header-height: 64px;
   --page-bg: #f3f5f8;
   --card-shadow: 0 8px 24px rgba(21, 32, 51, 0.08);
-  --radius: 14px;
+  --radius: 6px;
 }
 
 /* Tipografia compartilhada: textos em 12px e titulos de tela em 16px.
@@ -91,20 +93,20 @@ body.app-body {
 }
 
 .logo-mark {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 10px;
   background: linear-gradient(135deg, #2d6a4f, #40916c);
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 1.2rem;
+  font-size: var(--app-icon-size);
   flex-shrink: 0;
 }
 
 .sidebar-brand .logo-mark {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
 }
 
 .sidebar-brand strong { color: #fff; display: block; font-size: var(--app-font-size); }
@@ -163,8 +165,8 @@ body.app-body {
 }
 
 .sidebar-menu a i {
-  font-size: 1.1rem;
-  min-width: 1.2rem;
+  font-size: var(--app-icon-size);
+  min-width: var(--app-icon-size);
   text-align: center;
 }
 
@@ -193,7 +195,7 @@ body.sidebar-collapsed .sidebar-menu a {
 }
 
 body.sidebar-collapsed .sidebar-menu a i {
-  font-size: 1.2rem;
+  font-size: var(--app-icon-size);
   margin: 0;
 }
 
@@ -287,12 +289,12 @@ body.sidebar-collapsed .app-content {
 }
 
 .card-dashboard .icon-wrap {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius);
   display: grid;
   place-items: center;
-  font-size: 1.2rem;
+  font-size: var(--app-icon-size);
 }
 
 .bg-soft-green { background: #e8f6ef; color: #1b7a4a; }
@@ -563,4 +565,19 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   body.sidebar-open .sidebar { transform: none; }
   .app-content { margin-left: 0; }
   body.sidebar-collapsed .app-content { margin-left: 78px; }
+}
+
+/* Icones acompanham a escala compacta dos textos. */
+.bi {
+  font-size: var(--app-icon-size);
+}
+
+.logo-mark .bi,
+.login-logo .bi {
+  font-size: var(--app-brand-icon-size);
+}
+
+.card {
+  --bs-card-border-radius: var(--radius);
+  --bs-card-inner-border-radius: max(0px, calc(var(--radius) - 1px));
 }
