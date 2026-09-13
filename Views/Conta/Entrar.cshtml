@@ -14,7 +14,8 @@
                 </div>
             </div>
             <div class="login-hide">
-                <h2>Painel administrativo</h2>
+                <span class="login-eyebrow">GESTÃO IMOBILIÁRIA</span>
+                <h2>Seus imóveis. Tudo em ordem.</h2>
                 <p>Gerencie casas, contratos, inquilinos e o financeiro em um só lugar.</p>
                 <ul class="login-features">
                     <li><i class="bi bi-house"></i> Casas e contratos</li>
@@ -27,15 +28,12 @@
         <div class="login-footer">Acesso restrito a usuários autorizados</div>
     </aside>
     <div class="login-panel">
-        <header class="login-topbar">
-            <div>
-                <span>Painel administrativo</span>
-                <strong>Entrar</strong>
-            </div>
-        </header>
+
         <main class="login-main">
             <div class="login-card">
-                <h3>Acessar o sistema</h3>
+                <div class="login-access-icon"><i class="bi bi-person-lock" aria-hidden="true"></i></div>
+                <span class="login-eyebrow">BEM-VINDO DE VOLTA</span>
+                <h1>Acessar o sistema</h1>
                 <p class="sub">Informe seu e-mail e senha para continuar</p>
                 <form asp-action="Entrar" method="post">
                     @Html.AntiForgeryToken()
@@ -44,7 +42,7 @@
                         <label asp-for="Email"></label>
                         <div class="campo">
                             <span><i class="bi bi-envelope"></i></span>
-                            <input asp-for="Email" placeholder="admin@sistema.com" autocomplete="username" />
+                            <input asp-for="Email" placeholder="seu@email.com" autocomplete="username" />
                         </div>
                         <span asp-validation-for="Email" class="erro"></span>
                     </div>
@@ -60,7 +58,7 @@
                         <input asp-for="Lembrar" />
                         <span>Lembrar-me</span>
                     </label>
-                    <button type="submit" class="login-btn">Entrar</button>
+                    <button type="submit" class="login-btn">Entrar no sistema <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
                 </form>
                 <div class="login-hint">
                     Usuário inicial: <strong>admin@sistema.com</strong><br />
