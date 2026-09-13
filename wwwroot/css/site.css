@@ -14,6 +14,9 @@
   --page-bg: #f3f5f8;
   --card-shadow: 0 8px 24px rgba(21, 32, 51, 0.08);
   --radius: 6px;
+  --app-button-radius: 4px;
+  --app-button-padding-y: 0.25rem;
+  --app-button-padding-x: 0.625rem;
 }
 
 /* Tipografia compartilhada: textos em 12px e titulos de tela em 16px.
@@ -24,6 +27,9 @@ body {
 
 .btn {
   --bs-btn-font-size: var(--app-font-size);
+  --bs-btn-border-radius: var(--app-button-radius);
+  --bs-btn-padding-y: var(--app-button-padding-y);
+  --bs-btn-padding-x: var(--app-button-padding-x);
 }
 
 .dropdown-menu {
@@ -334,8 +340,6 @@ body.sidebar-collapsed .app-content {
 .table-modern td { vertical-align: middle; }
 
 .btn-modern {
-  border-radius: 10px;
-  padding: .45rem .9rem;
   font-weight: 600;
 }
 
@@ -580,4 +584,9 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .card {
   --bs-card-border-radius: var(--radius);
   --bs-card-inner-border-radius: max(0px, calc(var(--radius) - 1px));
+}
+
+.btn-sm, .btn-group-sm > .btn {
+  --bs-btn-padding-y: 0.1875rem;
+  --bs-btn-padding-x: 0.375rem;
 }
