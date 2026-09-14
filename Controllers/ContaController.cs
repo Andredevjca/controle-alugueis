@@ -13,8 +13,7 @@ public class ContaController : Controller
 {
     private readonly IServicoAutenticacao _autenticacao;
 
-    public ContaController(
-        IServicoAutenticacao autenticacao)
+    public ContaController(IServicoAutenticacao autenticacao)
     {
         _autenticacao = autenticacao;
     }

@@ -13,10 +13,7 @@ public class FinanceiroController : Controller
     private readonly IServicoCasa _casas;
     private readonly IServicoInquilino _inquilinos;
 
-    public FinanceiroController(
-        IServicoFinanceiro servico,
-        IServicoCasa casas,
-        IServicoInquilino inquilinos)
+    public FinanceiroController(IServicoFinanceiro servico, IServicoCasa casas, IServicoInquilino inquilinos)
     {
         _servico = servico;
         _casas = casas;

@@ -9,8 +9,7 @@ public class CasasController : Controller
 {
     private readonly IServicoCasa _servico;
 
-    public CasasController(
-        IServicoCasa servico)
+    public CasasController(IServicoCasa servico)
     {
         _servico = servico;
     }

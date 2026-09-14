@@ -17,11 +17,7 @@ public class ObservacoesController : Controller
     private readonly IServicoInquilino _inquilinos;
     private readonly IServicoContrato _contratos;
 
-    public ObservacoesController(
-        IServicoObservacao servico,
-        IServicoCasa casas,
-        IServicoInquilino inquilinos,
-        IServicoContrato contratos)
+    public ObservacoesController(IServicoObservacao servico, IServicoCasa casas, IServicoInquilino inquilinos, IServicoContrato contratos)
     {
         _servico = servico;
         _casas = casas;
@@ -223,8 +219,7 @@ public class ConfiguracoesController : Controller
 {
     private readonly IRepositorioConfiguracao _repositorio;
 
-    public ConfiguracoesController(
-        IRepositorioConfiguracao repositorio)
+    public ConfiguracoesController(IRepositorioConfiguracao repositorio)
     {
         _repositorio = repositorio;
     }

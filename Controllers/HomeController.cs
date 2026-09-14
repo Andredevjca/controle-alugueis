@@ -9,8 +9,7 @@ public class HomeController : Controller
 {
     private readonly IServicoDashboard _dashboard;
 
-    public HomeController(
-        IServicoDashboard dashboard)
+    public HomeController(IServicoDashboard dashboard)
     {
         _dashboard = dashboard;
     }

@@ -11,8 +11,7 @@ public class InquilinosController : Controller
 {
     private readonly IServicoInquilino _servico;
 
-    public InquilinosController(
-        IServicoInquilino servico)
+    public InquilinosController(IServicoInquilino servico)
     {
         _servico = servico;
     }
