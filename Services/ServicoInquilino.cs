@@ -1,12 +1,13 @@
+using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
 public class ServicoInquilino(IRepositorioInquilino repositorio, IRepositorioContrato contratos,
-    IRepositorioCasa casas, IRepositorioFinanceiro financeiro, IRepositorioObservacao observacoes)
+    IRepositorioCasa casas, IRepositorioFinanceiro financeiro, IRepositorioObservacao observacoes) : IServicoInquilino
 {
     public Task<(IEnumerable<Inquilino> Itens, int Total)> ListarAsync(string? busca, int pagina, int tamanho)
         => repositorio.ListarAsync(busca, pagina, tamanho);
@@ -106,7 +107,7 @@ public class ServicoInquilino(IRepositorioInquilino repositorio, IRepositorioCon
     };
 }
 
-public class ServicoContrato(IRepositorioContrato repositorio, IRepositorioCasa casas)
+public class ServicoContrato(IRepositorioContrato repositorio, IRepositorioCasa casas) : IServicoContrato
 {
     public Task<(IEnumerable<Contrato> Itens, int Total)> ListarAsync(string? busca, string? status, int pagina, int tamanho)
         => repositorio.ListarAsync(busca, status, pagina, tamanho);

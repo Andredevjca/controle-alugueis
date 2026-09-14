@@ -1,3 +1,4 @@
+using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
@@ -6,7 +7,7 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class InquilinosController(ServicoInquilino servico) : Controller
+public class InquilinosController(IServicoInquilino servico) : Controller
 {
     public async Task<IActionResult> Index(string? busca, int pagina = 1)
     {
@@ -97,7 +98,7 @@ public class InquilinosController(ServicoInquilino servico) : Controller
     }
 }
 
-public class ContratosController(ServicoContrato servico, ServicoCasa casas, ServicoInquilino inquilinos) : Controller
+public class ContratosController(IServicoContrato servico, IServicoCasa casas, IServicoInquilino inquilinos) : Controller
 {
     public async Task<IActionResult> Index(string? busca, string? status, int pagina = 1)
     {

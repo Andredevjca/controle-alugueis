@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
-using SistemaAlugueis.Infraestrutura;
-using SistemaAlugueis.Repositories;
-using SistemaAlugueis.Services;
+using SistemaAlugueis.Dependecias;
+using SistemaAlugueis.Interfaces.Services;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Claims;
@@ -35,31 +34,13 @@ builder.Services.AddAuthorization(opcoes =>
         .Build();
 });
 
-builder.Services.AddSingleton<ConexaoBanco>();
-builder.Services.AddScoped<IRepositorioCasa, RepositorioCasa>();
-builder.Services.AddScoped<IRepositorioInquilino, RepositorioInquilino>();
-builder.Services.AddScoped<IRepositorioContrato, RepositorioContrato>();
-builder.Services.AddScoped<IRepositorioFinanceiro, RepositorioFinanceiro>();
-builder.Services.AddScoped<IRepositorioContaConsumo, RepositorioContaConsumo>();
-builder.Services.AddScoped<IRepositorioObservacao, RepositorioObservacao>();
-builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
-builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
-builder.Services.AddScoped<IRepositorioConfiguracao, RepositorioConfiguracao>();
-builder.Services.AddScoped<ServicoCasa>();
-builder.Services.AddScoped<ServicoInquilino>();
-builder.Services.AddScoped<ServicoContrato>();
-builder.Services.AddScoped<ServicoFinanceiro>();
-builder.Services.AddScoped<ServicoContaConsumo>();
-builder.Services.AddScoped<ServicoObservacao>();
-builder.Services.AddScoped<ServicoDashboard>();
-builder.Services.AddScoped<ServicoRelatorio>();
-builder.Services.AddScoped<ServicoAutenticacao>();
+builder.Services.AdicionarDependencias();
 
 var app = builder.Build();
 
 using (var escopo = app.Services.CreateScope())
 {
-    var autenticacao = escopo.ServiceProvider.GetRequiredService<ServicoAutenticacao>();
+    var autenticacao = escopo.ServiceProvider.GetRequiredService<IServicoAutenticacao>();
     await autenticacao.GarantirAdministradorAsync();
 }
 

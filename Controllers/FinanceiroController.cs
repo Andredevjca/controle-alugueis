@@ -1,3 +1,4 @@
+using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
@@ -6,7 +7,7 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class FinanceiroController(ServicoFinanceiro servico, ServicoCasa casas, ServicoInquilino inquilinos) : Controller
+public class FinanceiroController(IServicoFinanceiro servico, IServicoCasa casas, IServicoInquilino inquilinos) : Controller
 {
     public async Task<IActionResult> Index(string? tipo, string? status, int? casaId, int? categoriaId,
         DateTime? dataInicio, DateTime? dataFim, string? busca, int pagina = 1)
@@ -95,7 +96,7 @@ public class FinanceiroController(ServicoFinanceiro servico, ServicoCasa casas, 
     }
 }
 
-public class ContasConsumoController(ServicoContaConsumo servico, ServicoCasa casas) : Controller
+public class ContasConsumoController(IServicoContaConsumo servico, IServicoCasa casas) : Controller
 {
     public async Task<IActionResult> Index(string? tipo, int? casaId, string? status, string? busca, int pagina = 1)
     {

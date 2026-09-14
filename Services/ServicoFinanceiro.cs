@@ -1,12 +1,13 @@
+using SistemaAlugueis.Interfaces.Services;
 using System.Globalization;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
-public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioCategoria categorias, IRepositorioContrato contratos)
+public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioCategoria categorias, IRepositorioContrato contratos) : IServicoFinanceiro
 {
     public Task<(IEnumerable<LancamentoFinanceiro> Itens, int Total)> ListarAsync(
         string? tipo, string? status, int? casaId, int? categoriaId, DateTime? inicio, DateTime? fim, string? busca, int pagina, int tamanho)
@@ -155,7 +156,7 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
     };
 }
 
-public class ServicoContaConsumo(IRepositorioContaConsumo repositorio)
+public class ServicoContaConsumo(IRepositorioContaConsumo repositorio) : IServicoContaConsumo
 {
     public Task<(IEnumerable<ContaConsumo> Itens, int Total)> ListarAsync(string? tipo, int? casaId, string? status, string? busca, int pagina, int tamanho)
         => repositorio.ListarAsync(tipo, casaId, status, busca, pagina, tamanho);
@@ -221,7 +222,7 @@ public class ServicoContaConsumo(IRepositorioContaConsumo repositorio)
     };
 }
 
-public class ServicoObservacao(IRepositorioObservacao repositorio)
+public class ServicoObservacao(IRepositorioObservacao repositorio) : IServicoObservacao
 {
     public Task<IEnumerable<Observacao>> ListarAsync(string? tipo, int? casaId, string? busca)
         => repositorio.ListarAsync(tipo, casaId, busca);

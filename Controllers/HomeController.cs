@@ -1,10 +1,11 @@
+using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SistemaAlugueis.Services;
 
 namespace SistemaAlugueis.Controllers;
 
-public class HomeController(ServicoDashboard dashboard) : Controller
+public class HomeController(IServicoDashboard dashboard) : Controller
 {
     public async Task<IActionResult> Index()
     {

@@ -1,10 +1,11 @@
+using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class CasasController(ServicoCasa servico) : Controller
+public class CasasController(IServicoCasa servico) : Controller
 {
     public async Task<IActionResult> Index(string? busca, string? status, int pagina = 1)
     {

@@ -1,19 +1,9 @@
+using SistemaAlugueis.Interfaces.Repositories;
 using Dapper;
 using SistemaAlugueis.Infraestrutura;
 using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
-
-public interface IRepositorioUsuario
-{
-    Task<IEnumerable<Usuario>> ListarAsync();
-    Task<Usuario?> ObterPorIdAsync(int id);
-    Task<Usuario?> ObterPorEmailAsync(string email);
-    Task<int> ContarAsync();
-    Task<int> InserirAsync(Usuario usuario);
-    Task AtualizarAsync(Usuario usuario);
-    Task AtualizarSenhaAsync(int id, string senhaHash);
-}
 
 public class RepositorioUsuario(ConexaoBanco conexao) : IRepositorioUsuario
 {
@@ -67,14 +57,6 @@ public class RepositorioUsuario(ConexaoBanco conexao) : IRepositorioUsuario
     }
 }
 
-public interface IRepositorioCategoria
-{
-    Task<IEnumerable<CategoriaFinanceira>> ListarAsync(string? tipo = null);
-    Task<CategoriaFinanceira?> ObterPorIdAsync(int id);
-    Task<int> InserirAsync(CategoriaFinanceira categoria);
-    Task AtualizarAsync(CategoriaFinanceira categoria);
-}
-
 public class RepositorioCategoria(ConexaoBanco conexao) : IRepositorioCategoria
 {
     public async Task<IEnumerable<CategoriaFinanceira>> ListarAsync(string? tipo = null)
@@ -106,12 +88,6 @@ public class RepositorioCategoria(ConexaoBanco conexao) : IRepositorioCategoria
         using var db = conexao.Criar();
         await db.ExecuteAsync("UPDATE categorias_financeiras SET nome=@Nome, tipo=@Tipo, ativo=@Ativo WHERE id=@Id", categoria);
     }
-}
-
-public interface IRepositorioConfiguracao
-{
-    Task<IEnumerable<Configuracao>> ListarAsync();
-    Task AtualizarAsync(int id, string? valor);
 }
 
 public class RepositorioConfiguracao(ConexaoBanco conexao) : IRepositorioConfiguracao

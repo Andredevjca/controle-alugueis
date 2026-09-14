@@ -1,3 +1,4 @@
+using SistemaAlugueis.Interfaces.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,7 +9,7 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class ContaController(ServicoAutenticacao autenticacao) : Controller
+public class ContaController(IServicoAutenticacao autenticacao) : Controller
 {
     [AllowAnonymous]
     [HttpGet]

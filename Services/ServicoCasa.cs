@@ -1,12 +1,13 @@
+using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
 public class ServicoCasa(IRepositorioCasa repositorio, IRepositorioContrato contratos, IRepositorioFinanceiro financeiro,
-    IRepositorioContaConsumo consumo, IRepositorioObservacao observacoes, IRepositorioInquilino inquilinos)
+    IRepositorioContaConsumo consumo, IRepositorioObservacao observacoes, IRepositorioInquilino inquilinos) : IServicoCasa
 {
     public Task<(IEnumerable<Casa> Itens, int Total)> ListarAsync(string? busca, string? status, int pagina, int tamanho)
         => repositorio.ListarAsync(busca, status, pagina, tamanho);

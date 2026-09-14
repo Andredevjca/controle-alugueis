@@ -1,15 +1,16 @@
+using SistemaAlugueis.Interfaces.Services;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class ObservacoesController(ServicoObservacao servico, ServicoCasa casas, ServicoInquilino inquilinos, ServicoContrato contratos) : Controller
+public class ObservacoesController(IServicoObservacao servico, IServicoCasa casas, IServicoInquilino inquilinos, IServicoContrato contratos) : Controller
 {
     public async Task<IActionResult> Index(string? tipo, int? casaId, string? busca)
     {
@@ -59,7 +60,7 @@ public class ObservacoesController(ServicoObservacao servico, ServicoCasa casas,
     }
 }
 
-public class RelatoriosController(ServicoRelatorio servico, ServicoCasa casas, ServicoInquilino inquilinos) : Controller
+public class RelatoriosController(IServicoRelatorio servico, IServicoCasa casas, IServicoInquilino inquilinos) : Controller
 {
     public async Task<IActionResult> Index(RelatorioViewModel filtro)
     {

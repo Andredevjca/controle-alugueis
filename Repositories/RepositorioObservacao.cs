@@ -1,21 +1,10 @@
+using SistemaAlugueis.Interfaces.Repositories;
 using Dapper;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Infraestrutura;
 using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
-
-public interface IRepositorioContaConsumo
-{
-    Task<(IEnumerable<ContaConsumo> Itens, int Total)> ListarAsync(string? tipo, int? casaId, string? status, string? busca, int pagina, int tamanho);
-    Task<ContaConsumo?> ObterPorIdAsync(int id);
-    Task<IEnumerable<ContaConsumo>> ListarPorCasaAsync(int casaId, string? tipo = null);
-    Task<int> InserirAsync(ContaConsumo conta);
-    Task AtualizarAsync(ContaConsumo conta);
-    Task CancelarAsync(int id);
-    Task MarcarPagoAsync(int id, DateTime dataPagamento);
-    Task MarcarAtrasadosAsync();
-}
 
 public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaConsumo
 {
@@ -111,17 +100,6 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
             WHERE status=@Pendente AND vencimento < CURDATE()",
             new { Atrasado = StatusFinanceiro.Atrasado, Pendente = StatusFinanceiro.Pendente });
     }
-}
-
-public interface IRepositorioObservacao
-{
-    Task<IEnumerable<Observacao>> ListarAsync(string? tipo, int? casaId, string? busca);
-    Task<Observacao?> ObterPorIdAsync(int id);
-    Task<IEnumerable<Observacao>> ListarPorCasaAsync(int casaId);
-    Task<IEnumerable<Observacao>> ListarPorInquilinoAsync(int inquilinoId);
-    Task<int> InserirAsync(Observacao observacao);
-    Task AtualizarAsync(Observacao observacao);
-    Task ExcluirAsync(int id);
 }
 
 public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservacao

@@ -1,5 +1,6 @@
+using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
-using SistemaAlugueis.Repositories;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
@@ -8,7 +9,7 @@ public class ServicoDashboard(
     IRepositorioCasa casas,
     IRepositorioContrato contratos,
     IRepositorioFinanceiro financeiro,
-    IRepositorioContaConsumo consumo)
+    IRepositorioContaConsumo consumo) : IServicoDashboard
 {
     public async Task<DashboardViewModel> ObterAsync()
     {
@@ -90,7 +91,7 @@ public class ServicoRelatorio(
     IRepositorioCasa casas,
     IRepositorioContrato contratos,
     IRepositorioFinanceiro financeiro,
-    IRepositorioContaConsumo consumo)
+    IRepositorioContaConsumo consumo) : IServicoRelatorio
 {
     public async Task<RelatorioViewModel> GerarAsync(RelatorioViewModel filtro)
     {
@@ -249,7 +250,7 @@ public class ServicoRelatorio(
         => pares.ToDictionary(p => p.K, p => p.V);
 }
 
-public class ServicoAutenticacao(IRepositorioUsuario usuarios)
+public class ServicoAutenticacao(IRepositorioUsuario usuarios) : IServicoAutenticacao
 {
     public async Task GarantirAdministradorAsync()
     {
