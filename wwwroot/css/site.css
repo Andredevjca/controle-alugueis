@@ -151,7 +151,7 @@ body.app-body {
   text-decoration: none;
   padding: .65rem 1.25rem;
   margin: 4px .6rem;
-  border-radius: 10px;
+  border-radius: var(--app-button-radius);
 }
 
 .sidebar-menu a:hover { background: var(--sidebar-bg-hover); color: #fff; }
