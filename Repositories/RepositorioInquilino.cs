@@ -6,8 +6,16 @@ using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
 
-public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
+public class RepositorioInquilino : IRepositorioInquilino
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioInquilino(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         i.id AS Id, i.nome_completo AS NomeCompleto, i.cpf AS Cpf, i.rg AS Rg,
         i.data_nascimento AS DataNascimento, i.telefone AS Telefone, i.whatsapp AS Whatsapp,
@@ -18,7 +26,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task<(IEnumerable<Inquilino> Itens, int Total)> ListarAsync(string? busca, int pagina, int tamanho)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE i.ativo = 1";
         if (!string.IsNullOrWhiteSpace(busca))
         {
@@ -40,7 +48,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task<IEnumerable<Inquilino>> ListarTodosAsync()
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Inquilino>($@"
             SELECT {Colunas}
             FROM inquilinos i
@@ -52,7 +60,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task<Inquilino?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Inquilino>($@"
             SELECT {Colunas}
             FROM inquilinos i
@@ -63,7 +71,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task<int> InserirAsync(Inquilino inquilino)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO inquilinos (nome_completo, cpf, rg, data_nascimento, telefone, whatsapp, email, profissao, renda, endereco_anterior, observacoes, ativo)
             VALUES (@NomeCompleto, @Cpf, @Rg, @DataNascimento, @Telefone, @Whatsapp, @Email, @Profissao, @Renda, @EnderecoAnterior, @Observacoes, 1);
@@ -72,7 +80,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task AtualizarAsync(Inquilino inquilino)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE inquilinos SET nome_completo=@NomeCompleto, cpf=@Cpf, rg=@Rg, data_nascimento=@DataNascimento,
                 telefone=@Telefone, whatsapp=@Whatsapp, email=@Email, profissao=@Profissao, renda=@Renda,
@@ -82,7 +90,7 @@ public class RepositorioInquilino(ConexaoBanco conexao) : IRepositorioInquilino
 
     public async Task ExcluirAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE inquilinos SET ativo = 0 WHERE id = @Id", new { Id = id });
     }
 }

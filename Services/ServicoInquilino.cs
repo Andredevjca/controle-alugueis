@@ -6,48 +6,62 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
-public class ServicoInquilino(IRepositorioInquilino repositorio, IRepositorioContrato contratos,
-    IRepositorioCasa casas, IRepositorioFinanceiro financeiro, IRepositorioObservacao observacoes) : IServicoInquilino
+public class ServicoInquilino : IServicoInquilino
 {
+    private readonly IRepositorioInquilino _inquilino;
+    private readonly IRepositorioContrato _contratos;
+    private readonly IRepositorioCasa _casas;
+    private readonly IRepositorioFinanceiro _financeiro;
+    private readonly IRepositorioObservacao _observacoes;
+
+    public ServicoInquilino(IRepositorioInquilino inquilino, IRepositorioContrato contratos, IRepositorioCasa casas, IRepositorioFinanceiro financeiro, IRepositorioObservacao observacoes)
+    {
+        _inquilino = inquilino;
+        _contratos = contratos;
+        _casas = casas;
+        _financeiro = financeiro;
+        _observacoes = observacoes;
+    }
+
     public Task<(IEnumerable<Inquilino> Itens, int Total)> ListarAsync(string? busca, int pagina, int tamanho)
-        => repositorio.ListarAsync(busca, pagina, tamanho);
+        => _inquilino.ListarAsync(busca, pagina, tamanho);
 
-    public Task<IEnumerable<Inquilino>> ListarTodosAsync() => repositorio.ListarTodosAsync();
+    public Task<IEnumerable<Inquilino>> ListarTodosAsync() => _inquilino.ListarTodosAsync();
 
-    public Task<Inquilino?> ObterAsync(int id) => repositorio.ObterPorIdAsync(id);
+    public Task<Inquilino?> ObterAsync(int id) => _inquilino.ObterPorIdAsync(id);
 
     public async Task<int> SalvarAsync(InquilinoViewModel modelo)
     {
         var entidade = Mapear(modelo);
         if (modelo.Id == 0)
         {
-            return await repositorio.InserirAsync(entidade);
+            return await _inquilino.InserirAsync(entidade);
         }
 
-        await repositorio.AtualizarAsync(entidade);
+        await _inquilino.AtualizarAsync(entidade);
         return modelo.Id;
     }
 
     public async Task ExcluirAsync(int id)
     {
-        var ativo = await contratos.ObterAtivoPorInquilinoAsync(id);
+        var ativo = await _contratos.ObterAtivoPorInquilinoAsync(id);
         if (ativo != null)
         {
             throw new InvalidOperationException("Não é possível excluir um inquilino com contrato ativo.");
         }
 
-        await repositorio.ExcluirAsync(id);
+        await _inquilino.ExcluirAsync(id);
     }
 
     public async Task<InquilinoDetalhesViewModel> ObterDetalhesAsync(int id)
     {
-        var inquilino = await repositorio.ObterPorIdAsync(id) ?? throw new InvalidOperationException("Inquilino não encontrado.");
-        var historico = (await contratos.ListarPorInquilinoAsync(id)).ToList();
+        var inquilino = await _inquilino.ObterPorIdAsync(id) ?? throw new InvalidOperationException("Inquilino não encontrado.");
+        var historico = (await _contratos.ListarPorInquilinoAsync(id)).ToList();
         var atual = historico.FirstOrDefault(c => c.Status == StatusContrato.Ativo);
         Casa? casa = null;
         if (atual != null)
         {
-            casa = await casas.ObterPorIdAsync(atual.CasaId);
+            casa = await _casas.ObterPorIdAsync(atual.CasaId);
         }
 
         return new InquilinoDetalhesViewModel
@@ -69,8 +83,8 @@ public class ServicoInquilino(IRepositorioInquilino repositorio, IRepositorioCon
                 Atual = c.Status == StatusContrato.Ativo,
                 TempoResidencia = Formatador.TempoResidencia(c.DataInicio, c.DataFim)
             }),
-            HistoricoFinanceiro = await financeiro.ListarPorInquilinoAsync(id),
-            Observacoes = await observacoes.ListarPorInquilinoAsync(id)
+            HistoricoFinanceiro = await _financeiro.ListarPorInquilinoAsync(id),
+            Observacoes = await _observacoes.ListarPorInquilinoAsync(id)
         };
     }
 
@@ -107,24 +121,35 @@ public class ServicoInquilino(IRepositorioInquilino repositorio, IRepositorioCon
     };
 }
 
-public class ServicoContrato(IRepositorioContrato repositorio, IRepositorioCasa casas) : IServicoContrato
+public class ServicoContrato : IServicoContrato
 {
+    private readonly IRepositorioContrato _repositorio;
+    private readonly IRepositorioCasa _casas;
+
+    public ServicoContrato(
+        IRepositorioContrato repositorio,
+        IRepositorioCasa casas)
+    {
+        _repositorio = repositorio;
+        _casas = casas;
+    }
+
     public Task<(IEnumerable<Contrato> Itens, int Total)> ListarAsync(string? busca, string? status, int pagina, int tamanho)
-        => repositorio.ListarAsync(busca, status, pagina, tamanho);
+        => _repositorio.ListarAsync(busca, status, pagina, tamanho);
 
-    public Task<IEnumerable<Contrato>> ListarTodosAsync() => repositorio.ListarTodosAsync();
+    public Task<IEnumerable<Contrato>> ListarTodosAsync() => _repositorio.ListarTodosAsync();
 
-    public Task<Contrato?> ObterAsync(int id) => repositorio.ObterPorIdAsync(id);
+    public Task<Contrato?> ObterAsync(int id) => _repositorio.ObterPorIdAsync(id);
 
     public async Task<int> SalvarAsync(ContratoViewModel modelo)
     {
-        var casaAtiva = await repositorio.ObterAtivoPorCasaAsync(modelo.CasaId);
+        var casaAtiva = await _repositorio.ObterAtivoPorCasaAsync(modelo.CasaId);
         if (casaAtiva != null && casaAtiva.Id != modelo.Id)
         {
             throw new InvalidOperationException("Esta casa já possui um contrato ativo.");
         }
 
-        var inquilinoAtivo = await repositorio.ObterAtivoPorInquilinoAsync(modelo.InquilinoId);
+        var inquilinoAtivo = await _repositorio.ObterAtivoPorInquilinoAsync(modelo.InquilinoId);
         if (inquilinoAtivo != null && inquilinoAtivo.Id != modelo.Id)
         {
             throw new InvalidOperationException("Este inquilino já possui um contrato ativo.");
@@ -135,26 +160,26 @@ public class ServicoContrato(IRepositorioContrato repositorio, IRepositorioCasa 
 
         if (modelo.Id == 0)
         {
-            var id = await repositorio.InserirAsync(entidade);
-            await casas.AtualizarStatusAsync(modelo.CasaId, StatusCasa.Alugada);
+            var id = await _repositorio.InserirAsync(entidade);
+            await _casas.AtualizarStatusAsync(modelo.CasaId, StatusCasa.Alugada);
             return id;
         }
 
-        await repositorio.AtualizarAsync(entidade);
+        await _repositorio.AtualizarAsync(entidade);
         return modelo.Id;
     }
 
     public async Task EncerrarAsync(int id, DateTime dataSaida, string status)
     {
-        var contrato = await repositorio.ObterPorIdAsync(id) ?? throw new InvalidOperationException("Contrato não encontrado.");
-        await repositorio.EncerrarAsync(id, dataSaida, status);
-        var outroAtivo = await repositorio.ObterAtivoPorCasaAsync(contrato.CasaId);
+        var contrato = await _repositorio.ObterPorIdAsync(id) ?? throw new InvalidOperationException("Contrato não encontrado.");
+        await _repositorio.EncerrarAsync(id, dataSaida, status);
+        var outroAtivo = await _repositorio.ObterAtivoPorCasaAsync(contrato.CasaId);
         if (outroAtivo == null)
         {
-            var casa = await casas.ObterPorIdAsync(contrato.CasaId);
+            var casa = await _casas.ObterPorIdAsync(contrato.CasaId);
             if (casa != null && casa.Status != StatusCasa.Manutencao)
             {
-                await casas.AtualizarStatusAsync(contrato.CasaId, StatusCasa.Disponivel);
+                await _casas.AtualizarStatusAsync(contrato.CasaId, StatusCasa.Disponivel);
             }
         }
     }

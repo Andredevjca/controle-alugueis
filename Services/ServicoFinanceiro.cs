@@ -7,19 +7,30 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
-public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioCategoria categorias, IRepositorioContrato contratos) : IServicoFinanceiro
+public class ServicoFinanceiro : IServicoFinanceiro
 {
+    private readonly IRepositorioFinanceiro _financeiro;
+    private readonly IRepositorioCategoria _categorias;
+    private readonly IRepositorioContrato _contratos;
+
+    public ServicoFinanceiro(IRepositorioFinanceiro financeiro, IRepositorioCategoria categorias, IRepositorioContrato contratos)
+    {
+        _financeiro = financeiro;
+        _categorias = categorias;
+        _contratos = contratos;
+    }
+
     public Task<(IEnumerable<LancamentoFinanceiro> Itens, int Total)> ListarAsync(
         string? tipo, string? status, int? casaId, int? categoriaId, DateTime? inicio, DateTime? fim, string? busca, int pagina, int tamanho)
-        => repositorio.ListarAsync(tipo, status, casaId, categoriaId, inicio, fim, busca, pagina, tamanho);
+        => _financeiro.ListarAsync(tipo, status, casaId, categoriaId, inicio, fim, busca, pagina, tamanho);
 
-    public Task<LancamentoFinanceiro?> ObterAsync(int id) => repositorio.ObterPorIdAsync(id);
+    public Task<LancamentoFinanceiro?> ObterAsync(int id) => _financeiro.ObterPorIdAsync(id);
 
-    public Task<IEnumerable<CategoriaFinanceira>> ListarCategoriasAsync(string? tipo = null) => categorias.ListarAsync(tipo);
+    public Task<IEnumerable<CategoriaFinanceira>> ListarCategoriasAsync(string? tipo = null) => _categorias.ListarAsync(tipo);
 
     public async Task<int> SalvarAsync(FinanceiroViewModel modelo)
     {
-        var anterior = modelo.Id == 0 ? null : await repositorio.ObterPorIdAsync(modelo.Id);
+        var anterior = modelo.Id == 0 ? null : await _financeiro.ObterPorIdAsync(modelo.Id);
         if (modelo.Status == StatusFinanceiro.Pago && modelo.DataPagamento == null)
         {
             modelo.DataPagamento = DateTime.Today;
@@ -28,10 +39,10 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
         var entidade = Mapear(modelo);
         if (modelo.Id == 0)
         {
-            var id = await repositorio.InserirAsync(entidade);
+            var id = await _financeiro.InserirAsync(entidade);
             if (entidade.Status == StatusFinanceiro.Pago)
             {
-                var criado = await repositorio.ObterPorIdAsync(id);
+                var criado = await _financeiro.ObterPorIdAsync(id);
                 if (criado != null)
                 {
                     await GerarProximoAluguelAsync(criado);
@@ -41,10 +52,10 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
             return id;
         }
 
-        await repositorio.AtualizarAsync(entidade);
+        await _financeiro.AtualizarAsync(entidade);
         if (entidade.Status == StatusFinanceiro.Pago && anterior?.Status != StatusFinanceiro.Pago)
         {
-            var atual = await repositorio.ObterPorIdAsync(modelo.Id);
+            var atual = await _financeiro.ObterPorIdAsync(modelo.Id);
             if (atual != null)
             {
                 await GerarProximoAluguelAsync(atual);
@@ -54,17 +65,17 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
         return modelo.Id;
     }
 
-    public Task CancelarAsync(int id) => repositorio.CancelarAsync(id);
+    public Task CancelarAsync(int id) => _financeiro.CancelarAsync(id);
 
     public async Task MarcarPagoAsync(int id)
     {
-        var lancamento = await repositorio.ObterPorIdAsync(id);
+        var lancamento = await _financeiro.ObterPorIdAsync(id);
         if (lancamento == null)
         {
             return;
         }
 
-        await repositorio.MarcarPagoAsync(id, DateTime.Today);
+        await _financeiro.MarcarPagoAsync(id, DateTime.Today);
         await GerarProximoAluguelAsync(lancamento);
     }
 
@@ -77,7 +88,7 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
 
         if (pago.ContratoId.HasValue)
         {
-            var contrato = await contratos.ObterPorIdAsync(pago.ContratoId.Value);
+            var contrato = await _contratos.ObterPorIdAsync(pago.ContratoId.Value);
             if (contrato == null || contrato.Status != StatusContrato.Ativo)
             {
                 return;
@@ -89,13 +100,13 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
         var dia = Math.Min(baseVencimento.Day, DateTime.DaysInMonth(proximoMes.Year, proximoMes.Month));
         var proximoVencimento = new DateTime(proximoMes.Year, proximoMes.Month, dia);
 
-        if (await repositorio.ExisteAluguelDoMesAsync(pago.CasaId, proximoVencimento))
+        if (await _financeiro.ExisteAluguelDoMesAsync(pago.CasaId, proximoVencimento))
         {
             return;
         }
 
         var casaNome = string.IsNullOrWhiteSpace(pago.CasaNome) ? "casa" : pago.CasaNome;
-        await repositorio.InserirAsync(new LancamentoFinanceiro
+        await _financeiro.InserirAsync(new LancamentoFinanceiro
         {
             CasaId = pago.CasaId,
             ContratoId = pago.ContratoId,
@@ -156,12 +167,20 @@ public class ServicoFinanceiro(IRepositorioFinanceiro repositorio, IRepositorioC
     };
 }
 
-public class ServicoContaConsumo(IRepositorioContaConsumo repositorio) : IServicoContaConsumo
+public class ServicoContaConsumo : IServicoContaConsumo
 {
-    public Task<(IEnumerable<ContaConsumo> Itens, int Total)> ListarAsync(string? tipo, int? casaId, string? status, string? busca, int pagina, int tamanho)
-        => repositorio.ListarAsync(tipo, casaId, status, busca, pagina, tamanho);
+    private readonly IRepositorioContaConsumo _repositorio;
 
-    public Task<ContaConsumo?> ObterAsync(int id) => repositorio.ObterPorIdAsync(id);
+    public ServicoContaConsumo(
+        IRepositorioContaConsumo repositorio)
+    {
+        _repositorio = repositorio;
+    }
+
+    public Task<(IEnumerable<ContaConsumo> Itens, int Total)> ListarAsync(string? tipo, int? casaId, string? status, string? busca, int pagina, int tamanho)
+        => _repositorio.ListarAsync(tipo, casaId, status, busca, pagina, tamanho);
+
+    public Task<ContaConsumo?> ObterAsync(int id) => _repositorio.ObterPorIdAsync(id);
 
     public async Task<int> SalvarAsync(ContaConsumoViewModel modelo)
     {
@@ -178,16 +197,16 @@ public class ServicoContaConsumo(IRepositorioContaConsumo repositorio) : IServic
         var entidade = Mapear(modelo);
         if (modelo.Id == 0)
         {
-            return await repositorio.InserirAsync(entidade);
+            return await _repositorio.InserirAsync(entidade);
         }
 
-        await repositorio.AtualizarAsync(entidade);
+        await _repositorio.AtualizarAsync(entidade);
         return modelo.Id;
     }
 
-    public Task CancelarAsync(int id) => repositorio.CancelarAsync(id);
+    public Task CancelarAsync(int id) => _repositorio.CancelarAsync(id);
 
-    public Task MarcarPagoAsync(int id) => repositorio.MarcarPagoAsync(id, DateTime.Today);
+    public Task MarcarPagoAsync(int id) => _repositorio.MarcarPagoAsync(id, DateTime.Today);
 
     public static ContaConsumoViewModel ParaFormulario(ContaConsumo c) => new()
     {
@@ -222,12 +241,20 @@ public class ServicoContaConsumo(IRepositorioContaConsumo repositorio) : IServic
     };
 }
 
-public class ServicoObservacao(IRepositorioObservacao repositorio) : IServicoObservacao
+public class ServicoObservacao : IServicoObservacao
 {
-    public Task<IEnumerable<Observacao>> ListarAsync(string? tipo, int? casaId, string? busca)
-        => repositorio.ListarAsync(tipo, casaId, busca);
+    private readonly IRepositorioObservacao _repositorio;
 
-    public Task<Observacao?> ObterAsync(int id) => repositorio.ObterPorIdAsync(id);
+    public ServicoObservacao(
+        IRepositorioObservacao repositorio)
+    {
+        _repositorio = repositorio;
+    }
+
+    public Task<IEnumerable<Observacao>> ListarAsync(string? tipo, int? casaId, string? busca)
+        => _repositorio.ListarAsync(tipo, casaId, busca);
+
+    public Task<Observacao?> ObterAsync(int id) => _repositorio.ObterPorIdAsync(id);
 
     public async Task<int> SalvarAsync(ObservacaoViewModel modelo, int? usuarioId)
     {
@@ -246,12 +273,12 @@ public class ServicoObservacao(IRepositorioObservacao repositorio) : IServicoObs
 
         if (modelo.Id == 0)
         {
-            return await repositorio.InserirAsync(entidade);
+            return await _repositorio.InserirAsync(entidade);
         }
 
-        await repositorio.AtualizarAsync(entidade);
+        await _repositorio.AtualizarAsync(entidade);
         return modelo.Id;
     }
 
-    public Task ExcluirAsync(int id) => repositorio.ExcluirAsync(id);
+    public Task ExcluirAsync(int id) => _repositorio.ExcluirAsync(id);
 }

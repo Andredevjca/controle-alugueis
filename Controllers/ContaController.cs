@@ -9,8 +9,16 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class ContaController(IServicoAutenticacao autenticacao) : Controller
+public class ContaController : Controller
 {
+    private readonly IServicoAutenticacao _autenticacao;
+
+    public ContaController(
+        IServicoAutenticacao autenticacao)
+    {
+        _autenticacao = autenticacao;
+    }
+
     [AllowAnonymous]
     [HttpGet]
     public IActionResult Entrar(string? returnUrl = null)
@@ -34,7 +42,7 @@ public class ContaController(IServicoAutenticacao autenticacao) : Controller
             return View(modelo);
         }
 
-        var usuario = await autenticacao.ValidarAsync(modelo.Email, modelo.Senha);
+        var usuario = await _autenticacao.ValidarAsync(modelo.Email, modelo.Senha);
         if (usuario == null)
         {
             ModelState.AddModelError(string.Empty, "E-mail ou senha inválidos.");

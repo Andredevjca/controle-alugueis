@@ -5,13 +5,21 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class CasasController(IServicoCasa servico) : Controller
+public class CasasController : Controller
 {
+    private readonly IServicoCasa _servico;
+
+    public CasasController(
+        IServicoCasa servico)
+    {
+        _servico = servico;
+    }
+
     public async Task<IActionResult> Index(string? busca, string? status, int pagina = 1)
     {
         ViewData["Title"] = "Casas";
         const int tamanho = 10;
-        var (itens, total) = await servico.ListarAsync(busca, status, pagina, tamanho);
+        var (itens, total) = await _servico.ListarAsync(busca, status, pagina, tamanho);
         return View(new CasaListaViewModel
         {
             Busca = busca,
@@ -36,7 +44,7 @@ public class CasasController(IServicoCasa servico) : Controller
         ViewData["Title"] = "Detalhes da casa";
         try
         {
-            return View(await servico.ObterDetalhesAsync(id, aba));
+            return View(await _servico.ObterDetalhesAsync(id, aba));
         }
         catch (InvalidOperationException)
         {
@@ -62,7 +70,7 @@ public class CasasController(IServicoCasa servico) : Controller
 
         try
         {
-            var id = await servico.SalvarAsync(modelo);
+            var id = await _servico.SalvarAsync(modelo);
             TempData["Sucesso"] = "Casa cadastrada com sucesso.";
             return RedirectToAction(nameof(Detalhes), new { id });
         }
@@ -76,7 +84,7 @@ public class CasasController(IServicoCasa servico) : Controller
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar casa";
-        var casa = await servico.ObterAsync(id);
+        var casa = await _servico.ObterAsync(id);
         if (casa == null)
         {
             return NotFound();
@@ -98,7 +106,7 @@ public class CasasController(IServicoCasa servico) : Controller
 
         try
         {
-            await servico.SalvarAsync(modelo);
+            await _servico.SalvarAsync(modelo);
             TempData["Sucesso"] = "Casa atualizada com sucesso.";
             return RedirectToAction(nameof(Detalhes), new { id });
         }
@@ -115,7 +123,7 @@ public class CasasController(IServicoCasa servico) : Controller
     {
         try
         {
-            await servico.ExcluirAsync(id);
+            await _servico.ExcluirAsync(id);
             TempData["Sucesso"] = "Casa inativada com sucesso.";
         }
         catch (Exception ex)
@@ -129,7 +137,7 @@ public class CasasController(IServicoCasa servico) : Controller
     [HttpGet]
     public async Task<IActionResult> Informacoes(int id)
     {
-        var casa = await servico.ObterAsync(id);
+        var casa = await _servico.ObterAsync(id);
         if (casa == null)
         {
             return NotFound();

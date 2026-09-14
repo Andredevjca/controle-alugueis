@@ -6,8 +6,16 @@ using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
 
-public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
+public class RepositorioContrato : IRepositorioContrato
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioContrato(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         co.id AS Id, co.numero AS Numero, co.casa_id AS CasaId, co.inquilino_id AS InquilinoId,
         co.data_inicio AS DataInicio, co.data_termino AS DataTermino, co.data_fim AS DataFim,
@@ -18,7 +26,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<(IEnumerable<Contrato> Itens, int Total)> ListarAsync(string? busca, string? status, int pagina, int tamanho)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE 1=1";
         if (!string.IsNullOrWhiteSpace(busca))
         {
@@ -50,7 +58,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<IEnumerable<Contrato>> ListarTodosAsync()
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Contrato>($@"
             SELECT {Colunas}
             FROM contratos co
@@ -61,7 +69,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<Contrato?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -71,7 +79,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<Contrato?> ObterAtivoPorCasaAsync(int casaId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -82,7 +90,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<Contrato?> ObterAtivoPorInquilinoAsync(int inquilinoId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -93,7 +101,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<IEnumerable<Contrato>> ListarPorCasaAsync(int casaId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -104,7 +112,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<IEnumerable<Contrato>> ListarPorInquilinoAsync(int inquilinoId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -115,7 +123,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<IEnumerable<Contrato>> ListarProximosVencimentoAsync(int dias)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Contrato>($@"
             SELECT {Colunas} FROM contratos co
             INNER JOIN casas ca ON ca.id = co.casa_id
@@ -128,7 +136,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task<int> InserirAsync(Contrato contrato)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO contratos (numero, casa_id, inquilino_id, data_inicio, data_termino, valor_aluguel, dia_vencimento,
                 valor_caucao, meses_caucao, indice_reajuste, percentual_multa, percentual_juros, status, observacoes)
@@ -139,7 +147,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task AtualizarAsync(Contrato contrato)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE contratos SET numero=@Numero, casa_id=@CasaId, inquilino_id=@InquilinoId, data_inicio=@DataInicio,
                 data_termino=@DataTermino, valor_aluguel=@ValorAluguel, dia_vencimento=@DiaVencimento,
@@ -150,7 +158,7 @@ public class RepositorioContrato(ConexaoBanco conexao) : IRepositorioContrato
 
     public async Task EncerrarAsync(int id, DateTime dataFim, string status)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE contratos SET status=@Status, data_fim=@DataFim WHERE id=@Id",
             new { Id = id, DataFim = dataFim, Status = status });

@@ -5,14 +5,22 @@ using SistemaAlugueis.Services;
 
 namespace SistemaAlugueis.Controllers;
 
-public class HomeController(IServicoDashboard dashboard) : Controller
+public class HomeController : Controller
 {
+    private readonly IServicoDashboard _dashboard;
+
+    public HomeController(
+        IServicoDashboard dashboard)
+    {
+        _dashboard = dashboard;
+    }
+
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Dashboard";
         try
         {
-            return View(await dashboard.ObterAsync());
+            return View(await _dashboard.ObterAsync());
         }
         catch (Exception)
         {

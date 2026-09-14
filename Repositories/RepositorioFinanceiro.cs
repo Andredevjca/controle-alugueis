@@ -6,8 +6,16 @@ using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
 
-public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceiro
+public class RepositorioFinanceiro : IRepositorioFinanceiro
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioFinanceiro(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         l.id AS Id, l.casa_id AS CasaId, l.contrato_id AS ContratoId, l.inquilino_id AS InquilinoId,
         l.tipo AS Tipo, l.categoria_id AS CategoriaId, l.origem AS Origem, l.descricao AS Descricao,
@@ -19,7 +27,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
     public async Task<(IEnumerable<LancamentoFinanceiro> Itens, int Total)> ListarAsync(
         string? tipo, string? status, int? casaId, int? categoriaId, DateTime? inicio, DateTime? fim, string? busca, int pagina, int tamanho)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE 1=1";
         if (!string.IsNullOrWhiteSpace(tipo)) filtro += " AND l.tipo = @Tipo";
         if (status == "Abertos")
@@ -71,7 +79,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<LancamentoFinanceiro?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<LancamentoFinanceiro>($@"
             SELECT {Colunas} FROM lancamentos_financeiros l
             LEFT JOIN casas ca ON ca.id = l.casa_id
@@ -82,7 +90,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<IEnumerable<LancamentoFinanceiro>> ListarPorCasaAsync(int casaId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<LancamentoFinanceiro>($@"
             SELECT {Colunas} FROM lancamentos_financeiros l
             LEFT JOIN casas ca ON ca.id = l.casa_id
@@ -94,7 +102,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<IEnumerable<LancamentoFinanceiro>> ListarPorInquilinoAsync(int inquilinoId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<LancamentoFinanceiro>($@"
             SELECT {Colunas} FROM lancamentos_financeiros l
             LEFT JOIN casas ca ON ca.id = l.casa_id
@@ -106,7 +114,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<int> InserirAsync(LancamentoFinanceiro lancamento)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO lancamentos_financeiros (casa_id, contrato_id, inquilino_id, tipo, categoria_id, origem, descricao,
                 data_lancamento, vencimento, valor, data_pagamento, status, observacoes)
@@ -117,7 +125,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task AtualizarAsync(LancamentoFinanceiro lancamento)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE lancamentos_financeiros SET casa_id=@CasaId, contrato_id=@ContratoId, inquilino_id=@InquilinoId,
                 tipo=@Tipo, categoria_id=@CategoriaId, origem=@Origem, descricao=@Descricao, data_lancamento=@DataLancamento,
@@ -127,21 +135,21 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task CancelarAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE lancamentos_financeiros SET status=@Status WHERE id=@Id",
             new { Id = id, Status = StatusFinanceiro.Cancelado });
     }
 
     public async Task MarcarPagoAsync(int id, DateTime dataPagamento)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE lancamentos_financeiros SET status=@Status, data_pagamento=@Data WHERE id=@Id",
             new { Id = id, Status = StatusFinanceiro.Pago, Data = dataPagamento });
     }
 
     public async Task MarcarAtrasadosAsync()
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE lancamentos_financeiros
             SET status = @Atrasado
@@ -151,7 +159,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<bool> ExisteAluguelDoMesAsync(int? casaId, DateTime vencimento)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var total = await db.ExecuteScalarAsync<int>(@"
             SELECT COUNT(*) FROM lancamentos_financeiros
             WHERE origem = @Origem
@@ -174,7 +182,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<decimal> SomarAsync(string tipo, string? status, DateTime inicio, DateTime fim, string? origem = null)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var sql = @"SELECT COALESCE(SUM(valor),0) FROM lancamentos_financeiros
                     WHERE tipo=@Tipo AND vencimento BETWEEN @Inicio AND @Fim AND status <> @Cancelado";
         if (!string.IsNullOrWhiteSpace(status)) sql += " AND status = @Status";
@@ -192,7 +200,7 @@ public class RepositorioFinanceiro(ConexaoBanco conexao) : IRepositorioFinanceir
 
     public async Task<IEnumerable<LancamentoFinanceiro>> ListarVencimentosAsync(int dias)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<LancamentoFinanceiro>($@"
             SELECT {Colunas}
             FROM lancamentos_financeiros l

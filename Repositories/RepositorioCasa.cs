@@ -6,8 +6,16 @@ using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
 
-public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
+public class RepositorioCasa : IRepositorioCasa
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioCasa(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         c.id AS Id, c.nome AS Nome, c.cep AS Cep, c.endereco AS Endereco, c.numero AS Numero,
         c.complemento AS Complemento, c.bairro AS Bairro, c.cidade AS Cidade, c.estado AS Estado,
@@ -18,7 +26,7 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task<(IEnumerable<Casa> Itens, int Total)> ListarAsync(string? busca, string? status, int pagina, int tamanho)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE c.ativo = 1";
         if (!string.IsNullOrWhiteSpace(busca))
         {
@@ -47,7 +55,7 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task<IEnumerable<Casa>> ListarTodasAsync()
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Casa>($@"
             SELECT {Colunas}
             FROM casas c
@@ -59,7 +67,7 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task<Casa?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Casa>($@"
             SELECT {Colunas}
             FROM casas c
@@ -70,7 +78,7 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task<int> InserirAsync(Casa casa)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO casas (nome, cep, endereco, numero, complemento, bairro, cidade, estado, valor_aluguel,
                 dia_vencimento, area_m2, qtd_quartos, qtd_banheiros, qtd_vagas, status, observacoes, ativo)
@@ -81,7 +89,7 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task AtualizarAsync(Casa casa)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE casas SET nome=@Nome, cep=@Cep, endereco=@Endereco, numero=@Numero, complemento=@Complemento,
                 bairro=@Bairro, cidade=@Cidade, estado=@Estado, valor_aluguel=@ValorAluguel, dia_vencimento=@DiaVencimento,
@@ -92,19 +100,19 @@ public class RepositorioCasa(ConexaoBanco conexao) : IRepositorioCasa
 
     public async Task ExcluirAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE casas SET ativo = 0 WHERE id = @Id", new { Id = id });
     }
 
     public async Task AtualizarStatusAsync(int id, string status)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE casas SET status = @Status WHERE id = @Id", new { Id = id, Status = status });
     }
 
     public async Task<int> ContarAsync(string? status = null)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         if (string.IsNullOrWhiteSpace(status))
         {
             return await db.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM casas WHERE ativo = 1");

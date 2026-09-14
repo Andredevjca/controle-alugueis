@@ -7,13 +7,21 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class InquilinosController(IServicoInquilino servico) : Controller
+public class InquilinosController : Controller
 {
+    private readonly IServicoInquilino _servico;
+
+    public InquilinosController(
+        IServicoInquilino servico)
+    {
+        _servico = servico;
+    }
+
     public async Task<IActionResult> Index(string? busca, int pagina = 1)
     {
         ViewData["Title"] = "Inquilinos";
         const int tamanho = 10;
-        var (itens, total) = await servico.ListarAsync(busca, pagina, tamanho);
+        var (itens, total) = await _servico.ListarAsync(busca, pagina, tamanho);
         return View(new InquilinoListaViewModel
         {
             Itens = itens,
@@ -28,7 +36,7 @@ public class InquilinosController(IServicoInquilino servico) : Controller
         ViewData["Title"] = "Detalhes do inquilino";
         try
         {
-            return View(await servico.ObterDetalhesAsync(id));
+            return View(await _servico.ObterDetalhesAsync(id));
         }
         catch (InvalidOperationException)
         {
@@ -48,7 +56,7 @@ public class InquilinosController(IServicoInquilino servico) : Controller
     {
         ViewData["Title"] = "Novo inquilino";
         if (!ModelState.IsValid) return View(modelo);
-        var id = await servico.SalvarAsync(modelo);
+        var id = await _servico.SalvarAsync(modelo);
         TempData["Sucesso"] = "Inquilino cadastrado com sucesso.";
         return RedirectToAction(nameof(Detalhes), new { id });
     }
@@ -56,7 +64,7 @@ public class InquilinosController(IServicoInquilino servico) : Controller
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar inquilino";
-        var item = await servico.ObterAsync(id);
+        var item = await _servico.ObterAsync(id);
         return item == null ? NotFound() : View(ServicoInquilino.ParaFormulario(item));
     }
 
@@ -67,7 +75,7 @@ public class InquilinosController(IServicoInquilino servico) : Controller
         ViewData["Title"] = "Editar inquilino";
         modelo.Id = id;
         if (!ModelState.IsValid) return View(modelo);
-        await servico.SalvarAsync(modelo);
+        await _servico.SalvarAsync(modelo);
         TempData["Sucesso"] = "Inquilino atualizado com sucesso.";
         return RedirectToAction(nameof(Detalhes), new { id });
     }
@@ -78,7 +86,7 @@ public class InquilinosController(IServicoInquilino servico) : Controller
     {
         try
         {
-            await servico.ExcluirAsync(id);
+            await _servico.ExcluirAsync(id);
             TempData["Sucesso"] = "Inquilino inativado com sucesso.";
         }
         catch (Exception ex)
@@ -92,19 +100,33 @@ public class InquilinosController(IServicoInquilino servico) : Controller
     [HttpGet]
     public async Task<IActionResult> Informacoes(int id)
     {
-        var item = await servico.ObterAsync(id);
+        var item = await _servico.ObterAsync(id);
         if (item == null) return NotFound();
         return Json(new { item.NomeCompleto, item.Cpf, item.Telefone, item.Email, item.Situacao });
     }
 }
 
-public class ContratosController(IServicoContrato servico, IServicoCasa casas, IServicoInquilino inquilinos) : Controller
+public class ContratosController : Controller
 {
+    private readonly IServicoContrato _servico;
+    private readonly IServicoCasa _casas;
+    private readonly IServicoInquilino _inquilinos;
+
+    public ContratosController(
+        IServicoContrato servico,
+        IServicoCasa casas,
+        IServicoInquilino inquilinos)
+    {
+        _servico = servico;
+        _casas = casas;
+        _inquilinos = inquilinos;
+    }
+
     public async Task<IActionResult> Index(string? busca, string? status, int pagina = 1)
     {
         ViewData["Title"] = "Contratos";
         const int tamanho = 10;
-        var (itens, total) = await servico.ListarAsync(busca, status, pagina, tamanho);
+        var (itens, total) = await _servico.ListarAsync(busca, status, pagina, tamanho);
         return View(new ContratoListaViewModel
         {
             Itens = itens,
@@ -118,7 +140,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
     public async Task<IActionResult> Detalhes(int id)
     {
         ViewData["Title"] = "Detalhes do contrato";
-        var contrato = await servico.ObterAsync(id);
+        var contrato = await _servico.ObterAsync(id);
         return contrato == null ? NotFound() : View(contrato);
     }
 
@@ -146,7 +168,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
 
         try
         {
-            var id = await servico.SalvarAsync(modelo);
+            var id = await _servico.SalvarAsync(modelo);
             TempData["Sucesso"] = "Contrato cadastrado com sucesso.";
             return RedirectToAction(nameof(Detalhes), new { id });
         }
@@ -160,7 +182,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar contrato";
-        var contrato = await servico.ObterAsync(id);
+        var contrato = await _servico.ObterAsync(id);
         if (contrato == null) return NotFound();
         return View(await MontarFormulario(ServicoContrato.ParaFormulario(contrato)));
     }
@@ -174,7 +196,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
         if (!ModelState.IsValid) return View(await MontarFormulario(modelo));
         try
         {
-            await servico.SalvarAsync(modelo);
+            await _servico.SalvarAsync(modelo);
             TempData["Sucesso"] = "Contrato atualizado com sucesso.";
             return RedirectToAction(nameof(Detalhes), new { id });
         }
@@ -188,7 +210,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
     public async Task<IActionResult> Encerrar(int id)
     {
         ViewData["Title"] = "Encerrar contrato";
-        var contrato = await servico.ObterAsync(id);
+        var contrato = await _servico.ObterAsync(id);
         if (contrato == null) return NotFound();
         return View(new EncerrarContratoViewModel
         {
@@ -204,7 +226,7 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Encerrar(EncerrarContratoViewModel modelo)
     {
-        await servico.EncerrarAsync(modelo.Id, modelo.DataSaida, StatusContrato.Encerrado);
+        await _servico.EncerrarAsync(modelo.Id, modelo.DataSaida, StatusContrato.Encerrado);
         TempData["Sucesso"] = "Contrato encerrado. O histórico do inquilino foi preservado.";
         return RedirectToAction(nameof(Detalhes), new { id = modelo.Id });
     }
@@ -213,15 +235,15 @@ public class ContratosController(IServicoContrato servico, IServicoCasa casas, I
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Cancelar(int id)
     {
-        await servico.EncerrarAsync(id, DateTime.Today, StatusContrato.Cancelado);
+        await _servico.EncerrarAsync(id, DateTime.Today, StatusContrato.Cancelado);
         TempData["Sucesso"] = "Contrato cancelado. O histórico foi preservado.";
         return RedirectToAction(nameof(Index));
     }
 
     private async Task<ContratoViewModel> MontarFormulario(ContratoViewModel modelo)
     {
-        var listaCasas = await casas.ListarTodasAsync();
-        var listaInquilinos = await inquilinos.ListarTodosAsync();
+        var listaCasas = await _casas.ListarTodasAsync();
+        var listaInquilinos = await _inquilinos.ListarTodosAsync();
         modelo.Casas = listaCasas.Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
         modelo.Inquilinos = listaInquilinos.Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
         return modelo;

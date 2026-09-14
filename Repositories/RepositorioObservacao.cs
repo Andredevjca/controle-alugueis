@@ -6,8 +6,16 @@ using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;
 
-public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaConsumo
+public class RepositorioContaConsumo : IRepositorioContaConsumo
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioContaConsumo(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         cc.id AS Id, cc.casa_id AS CasaId, cc.tipo AS Tipo, cc.referencia AS Referencia,
         cc.leitura_anterior AS LeituraAnterior, cc.leitura_atual AS LeituraAtual, cc.consumo AS Consumo,
@@ -17,7 +25,7 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task<(IEnumerable<ContaConsumo> Itens, int Total)> ListarAsync(string? tipo, int? casaId, string? status, string? busca, int pagina, int tamanho)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE 1=1";
         if (!string.IsNullOrWhiteSpace(tipo)) filtro += " AND cc.tipo = @Tipo";
         if (casaId.HasValue) filtro += " AND cc.casa_id = @CasaId";
@@ -40,7 +48,7 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task<ContaConsumo?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<ContaConsumo>($@"
             SELECT {Colunas} FROM contas_consumo cc
             INNER JOIN casas ca ON ca.id = cc.casa_id
@@ -49,7 +57,7 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task<IEnumerable<ContaConsumo>> ListarPorCasaAsync(int casaId, string? tipo = null)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE cc.casa_id = @CasaId";
         if (!string.IsNullOrWhiteSpace(tipo)) filtro += " AND cc.tipo = @Tipo";
         return await db.QueryAsync<ContaConsumo>($@"
@@ -61,7 +69,7 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task<int> InserirAsync(ContaConsumo conta)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO contas_consumo (casa_id, tipo, referencia, leitura_anterior, leitura_atual, consumo, valor, vencimento, data_pagamento, status, observacoes)
             VALUES (@CasaId, @Tipo, @Referencia, @LeituraAnterior, @LeituraAtual, @Consumo, @Valor, @Vencimento, @DataPagamento, @Status, @Observacoes);
@@ -70,7 +78,7 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task AtualizarAsync(ContaConsumo conta)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE contas_consumo SET casa_id=@CasaId, tipo=@Tipo, referencia=@Referencia, leitura_anterior=@LeituraAnterior,
                 leitura_atual=@LeituraAtual, consumo=@Consumo, valor=@Valor, vencimento=@Vencimento,
@@ -80,21 +88,21 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
 
     public async Task CancelarAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE contas_consumo SET status=@Status WHERE id=@Id",
             new { Id = id, Status = StatusFinanceiro.Cancelado });
     }
 
     public async Task MarcarPagoAsync(int id, DateTime dataPagamento)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("UPDATE contas_consumo SET status=@Status, data_pagamento=@Data WHERE id=@Id",
             new { Id = id, Status = StatusFinanceiro.Pago, Data = dataPagamento });
     }
 
     public async Task MarcarAtrasadosAsync()
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE contas_consumo SET status=@Atrasado
             WHERE status=@Pendente AND vencimento < CURDATE()",
@@ -102,8 +110,16 @@ public class RepositorioContaConsumo(ConexaoBanco conexao) : IRepositorioContaCo
     }
 }
 
-public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservacao
+public class RepositorioObservacao : IRepositorioObservacao
 {
+    private readonly ConexaoBanco _conexao;
+
+    public RepositorioObservacao(
+        ConexaoBanco conexao)
+    {
+        _conexao = conexao;
+    }
+
     private const string Colunas = @"
         o.id AS Id, o.titulo AS Titulo, o.descricao AS Descricao, o.tipo AS Tipo, o.casa_id AS CasaId,
         o.contrato_id AS ContratoId, o.inquilino_id AS InquilinoId, o.lancamento_id AS LancamentoId,
@@ -112,7 +128,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task<IEnumerable<Observacao>> ListarAsync(string? tipo, int? casaId, string? busca)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         var filtro = "WHERE 1=1";
         if (!string.IsNullOrWhiteSpace(tipo)) filtro += " AND o.tipo = @Tipo";
         if (casaId.HasValue) filtro += " AND o.casa_id = @CasaId";
@@ -128,7 +144,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task<Observacao?> ObterPorIdAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryFirstOrDefaultAsync<Observacao>($@"
             SELECT {Colunas} FROM observacoes o
             LEFT JOIN casas ca ON ca.id = o.casa_id
@@ -139,7 +155,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task<IEnumerable<Observacao>> ListarPorCasaAsync(int casaId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Observacao>($@"
             SELECT {Colunas} FROM observacoes o
             LEFT JOIN casas ca ON ca.id = o.casa_id
@@ -151,7 +167,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task<IEnumerable<Observacao>> ListarPorInquilinoAsync(int inquilinoId)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.QueryAsync<Observacao>($@"
             SELECT {Colunas} FROM observacoes o
             LEFT JOIN casas ca ON ca.id = o.casa_id
@@ -163,7 +179,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task<int> InserirAsync(Observacao observacao)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO observacoes (titulo, descricao, tipo, casa_id, contrato_id, inquilino_id, lancamento_id, conta_consumo_id, data_observacao, usuario_id)
             VALUES (@Titulo, @Descricao, @Tipo, @CasaId, @ContratoId, @InquilinoId, @LancamentoId, @ContaConsumoId, @DataObservacao, @UsuarioId);
@@ -172,7 +188,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task AtualizarAsync(Observacao observacao)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync(@"
             UPDATE observacoes SET titulo=@Titulo, descricao=@Descricao, tipo=@Tipo, casa_id=@CasaId,
                 contrato_id=@ContratoId, inquilino_id=@InquilinoId
@@ -181,7 +197,7 @@ public class RepositorioObservacao(ConexaoBanco conexao) : IRepositorioObservaca
 
     public async Task ExcluirAsync(int id)
     {
-        using var db = conexao.Criar();
+        using var db = _conexao.Criar();
         await db.ExecuteAsync("DELETE FROM observacoes WHERE id=@Id", new { Id = id });
     }
 }

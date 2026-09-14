@@ -5,32 +5,41 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
 
-public class ServicoDashboard(
-    IRepositorioCasa casas,
-    IRepositorioContrato contratos,
-    IRepositorioFinanceiro financeiro,
-    IRepositorioContaConsumo consumo) : IServicoDashboard
+public class ServicoDashboard : IServicoDashboard
 {
+    private readonly IRepositorioCasa _casas;
+    private readonly IRepositorioContrato _contratos;
+    private readonly IRepositorioFinanceiro _financeiro;
+    private readonly IRepositorioContaConsumo _consumo;
+
+    public ServicoDashboard(IRepositorioCasa casas, IRepositorioContrato contratos, IRepositorioFinanceiro financeiro, IRepositorioContaConsumo consumo)
+    {
+        _casas = casas;
+        _contratos = contratos;
+        _financeiro = financeiro;
+        _consumo = consumo;
+    }
+
     public async Task<DashboardViewModel> ObterAsync()
     {
-        await financeiro.MarcarAtrasadosAsync();
-        await consumo.MarcarAtrasadosAsync();
+        await _financeiro.MarcarAtrasadosAsync();
+        await _consumo.MarcarAtrasadosAsync();
 
         var hoje = DateTime.Today;
         var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
         var fimMes = inicioMes.AddMonths(1).AddDays(-1);
-        var listaCasas = (await casas.ListarTodasAsync()).ToList();
-        var lancamentosMesReceita = await financeiro.SomarAsync(TipoLancamento.Receita, null, inicioMes, fimMes);
-        var lancamentosMesDespesa = await financeiro.SomarAsync(TipoLancamento.Despesa, null, inicioMes, fimMes);
-        var recebido = await financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Pago, inicioMes, fimMes);
-        var pendente = await financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Pendente, inicioMes, fimMes);
-        var atrasado = await financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Atrasado, new DateTime(2000, 1, 1), fimMes);
-        var vencimentos = (await financeiro.ListarVencimentosAsync(20)).ToList();
+        var listaCasas = (await _casas.ListarTodasAsync()).ToList();
+        var lancamentosMesReceita = await _financeiro.SomarAsync(TipoLancamento.Receita, null, inicioMes, fimMes);
+        var lancamentosMesDespesa = await _financeiro.SomarAsync(TipoLancamento.Despesa, null, inicioMes, fimMes);
+        var recebido = await _financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Pago, inicioMes, fimMes);
+        var pendente = await _financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Pendente, inicioMes, fimMes);
+        var atrasado = await _financeiro.SomarAsync(TipoLancamento.Receita, StatusFinanceiro.Atrasado, new DateTime(2000, 1, 1), fimMes);
+        var vencimentos = (await _financeiro.ListarVencimentosAsync(20)).ToList();
 
         var cards = new List<CardCasaDashboardViewModel>();
         foreach (var casa in listaCasas)
         {
-            var lancs = (await financeiro.ListarPorCasaAsync(casa.Id)).ToList();
+            var lancs = (await _financeiro.ListarPorCasaAsync(casa.Id)).ToList();
             var situacao = "Em dia";
             if (lancs.Any(l => l.Tipo == TipoLancamento.Receita && l.Status == StatusFinanceiro.Atrasado))
             {
@@ -82,17 +91,30 @@ public class ServicoDashboard(
                 Valor = v.Valor,
                 Status = v.Status
             }),
-            ContratosProximosVencimento = await contratos.ListarProximosVencimentoAsync(60)
+            ContratosProximosVencimento = await _contratos.ListarProximosVencimentoAsync(60)
         };
     }
 }
 
-public class ServicoRelatorio(
-    IRepositorioCasa casas,
-    IRepositorioContrato contratos,
-    IRepositorioFinanceiro financeiro,
-    IRepositorioContaConsumo consumo) : IServicoRelatorio
+public class ServicoRelatorio : IServicoRelatorio
 {
+    private readonly IRepositorioCasa _casas;
+    private readonly IRepositorioContrato _contratos;
+    private readonly IRepositorioFinanceiro _financeiro;
+    private readonly IRepositorioContaConsumo _consumo;
+
+    public ServicoRelatorio(
+        IRepositorioCasa casas,
+        IRepositorioContrato contratos,
+        IRepositorioFinanceiro financeiro,
+        IRepositorioContaConsumo consumo)
+    {
+        _casas = casas;
+        _contratos = contratos;
+        _financeiro = financeiro;
+        _consumo = consumo;
+    }
+
     public async Task<RelatorioViewModel> GerarAsync(RelatorioViewModel filtro)
     {
         var inicio = filtro.DataInicio ?? new DateTime(DateTime.Today.Year, 1, 1);
@@ -110,7 +132,7 @@ public class ServicoRelatorio(
                     "casas-disponiveis" => StatusCasa.Disponivel,
                     _ => filtro.Status
                 };
-                var listaCasas = await casas.ListarTodasAsync();
+                var listaCasas = await _casas.ListarTodasAsync();
                 var filtradas = listaCasas.Where(c =>
                     (statusCasa == null || c.Status == statusCasa) &&
                     (!filtro.CasaId.HasValue || c.Id == filtro.CasaId));
@@ -124,7 +146,7 @@ public class ServicoRelatorio(
                 break;
 
             case "inquilinos-atuais":
-                var contratosAtivos = (await contratos.ListarTodosAsync())
+                var contratosAtivos = (await _contratos.ListarTodosAsync())
                     .Where(c => c.Status == StatusContrato.Ativo)
                     .Where(c => !filtro.InquilinoId.HasValue || c.InquilinoId == filtro.InquilinoId);
                 filtro.Colunas = ["Inquilino", "Casa", "Contrato", "Entrada", "Aluguel"];
@@ -137,7 +159,7 @@ public class ServicoRelatorio(
                 break;
 
             case "historico-inquilinos":
-                var todosContratos = await contratos.ListarTodosAsync();
+                var todosContratos = await _contratos.ListarTodosAsync();
                 if (filtro.InquilinoId.HasValue)
                 {
                     todosContratos = todosContratos.Where(c => c.InquilinoId == filtro.InquilinoId);
@@ -155,7 +177,7 @@ public class ServicoRelatorio(
             case "contratos-ativos":
             case "contratos-encerrados":
                 var st = filtro.TipoRelatorio == "contratos-ativos" ? StatusContrato.Ativo : StatusContrato.Encerrado;
-                var listaC = (await contratos.ListarTodosAsync()).Where(c => c.Status == st);
+                var listaC = (await _contratos.ListarTodosAsync()).Where(c => c.Status == st);
                 filtro.Colunas = ["Número", "Casa", "Inquilino", "Início", "Término", "Valor", "Status"];
                 filtro.Linhas = listaC.Select(c => Dict(
                     ("Número", c.Numero),
@@ -182,7 +204,7 @@ public class ServicoRelatorio(
                     _ => filtro.Status
                 };
                 var origem = filtro.TipoRelatorio.StartsWith("alugueis") ? OrigemReceita.Aluguel : null;
-                var (itens, _) = await financeiro.ListarAsync(tipo, statusFin, filtro.CasaId, null, inicio, fim, null, 1, 500);
+                var (itens, _) = await _financeiro.ListarAsync(tipo, statusFin, filtro.CasaId, null, inicio, fim, null, 1, 500);
                 if (origem != null)
                 {
                     itens = itens.Where(i => i.Origem == origem);
@@ -200,8 +222,8 @@ public class ServicoRelatorio(
                 filtro.Total = itens.Where(i => i.Status != StatusFinanceiro.Cancelado).Sum(i => i.Valor);
                 if (filtro.TipoRelatorio == "saldo")
                 {
-                    var rec = await financeiro.SomarAsync(TipoLancamento.Receita, null, inicio, fim);
-                    var des = await financeiro.SomarAsync(TipoLancamento.Despesa, null, inicio, fim);
+                    var rec = await _financeiro.SomarAsync(TipoLancamento.Receita, null, inicio, fim);
+                    var des = await _financeiro.SomarAsync(TipoLancamento.Despesa, null, inicio, fim);
                     filtro.Total = rec - des;
                 }
                 break;
@@ -209,7 +231,7 @@ public class ServicoRelatorio(
             case "contas-agua":
             case "contas-luz":
                 var tipoC = filtro.TipoRelatorio == "contas-agua" ? TipoConsumo.Agua : TipoConsumo.Luz;
-                var (contas, _) = await consumo.ListarAsync(tipoC, filtro.CasaId, filtro.Status, null, 1, 500);
+                var (contas, _) = await _consumo.ListarAsync(tipoC, filtro.CasaId, filtro.Status, null, 1, 500);
                 filtro.Colunas = ["Casa", "Tipo", "Referência", "Consumo", "Valor", "Vencimento", "Status"];
                 filtro.Linhas = contas.Select(c => Dict(
                     ("Casa", c.CasaNome ?? "-"),
@@ -250,18 +272,26 @@ public class ServicoRelatorio(
         => pares.ToDictionary(p => p.K, p => p.V);
 }
 
-public class ServicoAutenticacao(IRepositorioUsuario usuarios) : IServicoAutenticacao
+public class ServicoAutenticacao : IServicoAutenticacao
 {
+    private readonly IRepositorioUsuario _usuarios;
+
+    public ServicoAutenticacao(
+        IRepositorioUsuario usuarios)
+    {
+        _usuarios = usuarios;
+    }
+
     public async Task GarantirAdministradorAsync()
     {
         try
         {
-            if (await usuarios.ContarAsync() > 0)
+            if (await _usuarios.ContarAsync() > 0)
             {
                 return;
             }
 
-            await usuarios.InserirAsync(new Models.Usuario
+            await _usuarios.InserirAsync(new Models.Usuario
             {
                 Nome = "Administrador",
                 Email = "admin@sistema.com",
@@ -278,7 +308,7 @@ public class ServicoAutenticacao(IRepositorioUsuario usuarios) : IServicoAutenti
 
     public async Task<Models.Usuario?> ValidarAsync(string email, string senha)
     {
-        var usuario = await usuarios.ObterPorEmailAsync(email);
+        var usuario = await _usuarios.ObterPorEmailAsync(email);
         if (usuario == null || !usuario.Ativo)
         {
             return null;

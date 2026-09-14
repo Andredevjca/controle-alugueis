@@ -10,18 +10,35 @@ using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
-public class ObservacoesController(IServicoObservacao servico, IServicoCasa casas, IServicoInquilino inquilinos, IServicoContrato contratos) : Controller
+public class ObservacoesController : Controller
 {
+    private readonly IServicoObservacao _servico;
+    private readonly IServicoCasa _casas;
+    private readonly IServicoInquilino _inquilinos;
+    private readonly IServicoContrato _contratos;
+
+    public ObservacoesController(
+        IServicoObservacao servico,
+        IServicoCasa casas,
+        IServicoInquilino inquilinos,
+        IServicoContrato contratos)
+    {
+        _servico = servico;
+        _casas = casas;
+        _inquilinos = inquilinos;
+        _contratos = contratos;
+    }
+
     public async Task<IActionResult> Index(string? tipo, int? casaId, string? busca)
     {
         ViewData["Title"] = "Observações";
         return View(new ObservacaoListaViewModel
         {
-            Itens = await servico.ListarAsync(tipo, casaId, busca),
+            Itens = await _servico.ListarAsync(tipo, casaId, busca),
             Tipo = tipo,
             CasaId = casaId,
             Busca = busca,
-            Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId))
+            Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId))
         });
     }
 
@@ -37,7 +54,7 @@ public class ObservacoesController(IServicoObservacao servico, IServicoCasa casa
     {
         if (!ModelState.IsValid) return View(await Montar(modelo));
         var usuarioId = int.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : (int?)null;
-        await servico.SalvarAsync(modelo, usuarioId);
+        await _servico.SalvarAsync(modelo, usuarioId);
         TempData["Sucesso"] = "Observação registrada.";
         return RedirectToAction(nameof(Index));
     }
@@ -46,38 +63,60 @@ public class ObservacoesController(IServicoObservacao servico, IServicoCasa casa
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Excluir(int id)
     {
-        await servico.ExcluirAsync(id);
+        await _servico.ExcluirAsync(id);
         TempData["Sucesso"] = "Observação excluída.";
         return RedirectToAction(nameof(Index));
     }
 
     private async Task<ObservacaoViewModel> Montar(ObservacaoViewModel modelo)
     {
-        modelo.Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
-        modelo.Inquilinos = (await inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
-        modelo.Contratos = (await contratos.ListarTodosAsync()).Select(c => new SelectListItem($"{c.Numero} - {c.CasaNome}", c.Id.ToString(), c.Id == modelo.ContratoId));
+        modelo.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
+        modelo.Inquilinos = (await _inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
+        modelo.Contratos = (await _contratos.ListarTodosAsync()).Select(c => new SelectListItem($"{c.Numero} - {c.CasaNome}", c.Id.ToString(), c.Id == modelo.ContratoId));
         return modelo;
     }
 }
 
-public class RelatoriosController(IServicoRelatorio servico, IServicoCasa casas, IServicoInquilino inquilinos) : Controller
+public class RelatoriosController : Controller
 {
+    private readonly IServicoRelatorio _servico;
+    private readonly IServicoCasa _casas;
+    private readonly IServicoInquilino _inquilinos;
+
+    public RelatoriosController(
+        IServicoRelatorio servico,
+        IServicoCasa casas,
+        IServicoInquilino inquilinos)
+    {
+        _servico = servico;
+        _casas = casas;
+        _inquilinos = inquilinos;
+    }
+
     public async Task<IActionResult> Index(RelatorioViewModel filtro)
     {
         ViewData["Title"] = "Relatórios";
         filtro.TipoRelatorio = string.IsNullOrWhiteSpace(filtro.TipoRelatorio) ? "casas" : filtro.TipoRelatorio;
-        filtro.Casas = (await casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == filtro.CasaId));
-        filtro.Inquilinos = (await inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == filtro.InquilinoId));
-        return View(await servico.GerarAsync(filtro));
+        filtro.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == filtro.CasaId));
+        filtro.Inquilinos = (await _inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == filtro.InquilinoId));
+        return View(await _servico.GerarAsync(filtro));
     }
 }
 
-public class CategoriasController(IRepositorioCategoria repositorio) : Controller
+public class CategoriasController : Controller
 {
+    private readonly IRepositorioCategoria _repositorio;
+
+    public CategoriasController(
+        IRepositorioCategoria repositorio)
+    {
+        _repositorio = repositorio;
+    }
+
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Categorias";
-        return View(await repositorio.ListarAsync());
+        return View(await _repositorio.ListarAsync());
     }
 
     public IActionResult Criar()
@@ -91,18 +130,26 @@ public class CategoriasController(IRepositorioCategoria repositorio) : Controlle
     public async Task<IActionResult> Criar(CategoriaViewModel modelo)
     {
         if (!ModelState.IsValid) return View(modelo);
-        await repositorio.InserirAsync(new CategoriaFinanceira { Nome = modelo.Nome, Tipo = modelo.Tipo, Ativo = true });
+        await _repositorio.InserirAsync(new CategoriaFinanceira { Nome = modelo.Nome, Tipo = modelo.Tipo, Ativo = true });
         TempData["Sucesso"] = "Categoria cadastrada.";
         return RedirectToAction(nameof(Index));
     }
 }
 
-public class UsuariosController(IRepositorioUsuario repositorio) : Controller
+public class UsuariosController : Controller
 {
+    private readonly IRepositorioUsuario _repositorio;
+
+    public UsuariosController(
+        IRepositorioUsuario repositorio)
+    {
+        _repositorio = repositorio;
+    }
+
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Usuários";
-        return View(await repositorio.ListarAsync());
+        return View(await _repositorio.ListarAsync());
     }
 
     public IActionResult Criar()
@@ -121,7 +168,7 @@ public class UsuariosController(IRepositorioUsuario repositorio) : Controller
         }
 
         if (!ModelState.IsValid) return View(modelo);
-        await repositorio.InserirAsync(new Usuario
+        await _repositorio.InserirAsync(new Usuario
         {
             Nome = modelo.Nome,
             Email = modelo.Email,
@@ -135,7 +182,7 @@ public class UsuariosController(IRepositorioUsuario repositorio) : Controller
 
     public async Task<IActionResult> Editar(int id)
     {
-        var usuario = await repositorio.ObterPorIdAsync(id);
+        var usuario = await _repositorio.ObterPorIdAsync(id);
         if (usuario == null) return NotFound();
         ViewData["Title"] = "Editar usuário";
         return View(new UsuarioViewModel
@@ -154,7 +201,7 @@ public class UsuariosController(IRepositorioUsuario repositorio) : Controller
     {
         modelo.Id = id;
         if (!ModelState.IsValid) return View(modelo);
-        await repositorio.AtualizarAsync(new Usuario
+        await _repositorio.AtualizarAsync(new Usuario
         {
             Id = id,
             Nome = modelo.Nome,
@@ -164,7 +211,7 @@ public class UsuariosController(IRepositorioUsuario repositorio) : Controller
         });
         if (!string.IsNullOrWhiteSpace(modelo.Senha))
         {
-            await repositorio.AtualizarSenhaAsync(id, BCrypt.Net.BCrypt.HashPassword(modelo.Senha));
+            await _repositorio.AtualizarSenhaAsync(id, BCrypt.Net.BCrypt.HashPassword(modelo.Senha));
         }
 
         TempData["Sucesso"] = "Usuário atualizado.";
@@ -172,19 +219,27 @@ public class UsuariosController(IRepositorioUsuario repositorio) : Controller
     }
 }
 
-public class ConfiguracoesController(IRepositorioConfiguracao repositorio) : Controller
+public class ConfiguracoesController : Controller
 {
+    private readonly IRepositorioConfiguracao _repositorio;
+
+    public ConfiguracoesController(
+        IRepositorioConfiguracao repositorio)
+    {
+        _repositorio = repositorio;
+    }
+
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Configurações";
-        return View(new ConfiguracaoViewModel { Itens = await repositorio.ListarAsync() });
+        return View(new ConfiguracaoViewModel { Itens = await _repositorio.ListarAsync() });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(int id, string? valor)
     {
-        await repositorio.AtualizarAsync(id, valor);
+        await _repositorio.AtualizarAsync(id, valor);
         TempData["Sucesso"] = "Configuração atualizada.";
         return RedirectToAction(nameof(Index));
     }
