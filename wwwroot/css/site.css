@@ -39,6 +39,10 @@ body {
 
 .dropdown-menu {
   --bs-dropdown-font-size: var(--app-font-size);
+  --bs-dropdown-link-active-bg: var(--sidebar-active);
+  --bs-dropdown-link-active-color: #fff;
+  --bs-dropdown-link-hover-bg: #e8f6ef;
+  --bs-dropdown-link-hover-color: #245c43;
 }
 
 .pagination {
