@@ -91,23 +91,32 @@
             <h2 class="h5 mb-3">Próximos vencimentos</h2>
             <div class="table-responsive">
                 <table class="table table-modern align-middle">
-                    <thead><tr><th>Casa</th><th>Inquilino</th><th>Tipo</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr></thead>
-                    <tbody>
-                    @foreach (var item in Model.ProximosVencimentos)
-                    {
+                    <thead>
                         <tr>
-                            <td>@item.Casa</td>
-                            <td>@item.Inquilino</td>
-                            <td>@item.Tipo</td>
-                            <td>@Formatador.Data(item.Vencimento)</td>
-                            <td>@Formatador.Moeda(item.Valor)</td>
-                            <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
+                            <th>Casa</th>
+                            <th>Inquilino</th>
+                            <th>Tipo</th>
+                            <th>Vencimento</th>
+                            <th>Valor</th>
+                            <th>Status</th>
                         </tr>
-                    }
-                    @if (!Model.ProximosVencimentos.Any())
-                    {
-                        <tr><td colspan="6" class="text-muted">Nenhum vencimento próximo.</td></tr>
-                    }
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.ProximosVencimentos)
+                        {
+                            <tr>
+                                <td>@item.Casa</td>
+                                <td>@item.Inquilino</td>
+                                <td>@item.Tipo</td>
+                                <td>@Formatador.Data(item.Vencimento)</td>
+                                <td>@Formatador.Moeda(item.Valor)</td>
+                                <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
+                            </tr>
+                        }
+                        @if (!Model.ProximosVencimentos.Any())
+                        {
+                            <tr><td colspan="6" class="text-muted">Nenhum vencimento próximo.</td></tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -116,9 +125,18 @@
     <div class="col-xl-4">
         <div class="content-card p-3 mb-3">
             <h2 class="h5">Resumo financeiro</h2>
-            <div class="d-flex justify-content-between py-2 border-bottom"><span>Receitas</span><strong>@Formatador.Moeda(Model.ReceitasMes)</strong></div>
-            <div class="d-flex justify-content-between py-2 border-bottom"><span>Despesas</span><strong>@Formatador.Moeda(Model.DespesasMes)</strong></div>
-            <div class="d-flex justify-content-between py-2"><span>Saldo</span><strong>@Formatador.Moeda(Model.SaldoMes)</strong></div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span>Receitas</span>
+                <strong>@Formatador.Moeda(Model.ReceitasMes)</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <span>Despesas</span>
+                <strong>@Formatador.Moeda(Model.DespesasMes)</strong>
+            </div>
+            <div class="d-flex justify-content-between py-2">
+                <span>Saldo</span>
+                <strong>@Formatador.Moeda(Model.SaldoMes)</strong>
+            </div>
         </div>
         <div class="content-card p-3">
             <h2 class="h5">Contratos próximos do vencimento</h2>

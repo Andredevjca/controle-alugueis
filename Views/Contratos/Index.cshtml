@@ -5,44 +5,64 @@
 </div>
 <form class="content-card p-3 mb-3" method="get">
     <div class="row g-2">
-        <div class="col-md-6"><input name="busca" value="@Model.Busca" class="form-control" placeholder="Número, casa ou inquilino" /></div>
+        <div class="col-md-6">
+            <input name="busca" value="@Model.Busca" class="form-control" placeholder="Número, casa ou inquilino" />
+        </div>
         <div class="col-md-3">
             <select name="status" class="form-select">
                 <option value="">Todos os status</option>
-                <option>Ativo</option><option>Encerrado</option><option>Cancelado</option><option>Vencido</option>
+                <option>Ativo</option>
+                <option>Encerrado</option>
+                <option>Cancelado</option>
+                <option>Vencido</option>
             </select>
         </div>
-        <div class="col-md-3"><button class="btn btn-outline-secondary w-100">Filtrar</button></div>
+        <div class="col-md-3">
+            <button class="btn btn-outline-secondary w-100">Filtrar</button>
+        </div>
     </div>
 </form>
 <div class="content-card p-3">
     <div class="table-responsive">
         <table class="table table-modern">
-            <thead><tr><th>Número</th><th>Casa</th><th>Inquilino</th><th>Data inicial</th><th>Data final</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead>
-            <tbody>
-            @foreach (var item in Model.Itens)
-            {
+            <thead>
                 <tr>
-                    <td>@item.Numero</td>
-                    <td>@item.CasaNome</td>
-                    <td>@item.InquilinoNome</td>
-                    <td>@Formatador.Data(item.DataInicio)</td>
-                    <td>@Formatador.Data(item.DataFim ?? item.DataTermino)</td>
-                    <td>@Formatador.Moeda(item.ValorAluguel)</td>
-                    <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
-                    <td class="text-nowrap">
-                        <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
-                        @if (item.Status == StatusContrato.Ativo)
-                        {
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
-                            <a class="btn btn-sm btn-outline-danger" asp-action="Encerrar" asp-route-id="@item.Id">Encerrar</a>
-                        }
-                    </td>
+                    <th>Número</th>
+                    <th>Casa</th>
+                    <th>Inquilino</th>
+                    <th>Data inicial</th>
+                    <th>Data final</th>
+                    <th>Valor</th>
+                    <th>Status</th>
+                    <th>Ações</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Itens)
+                {
+                    <tr>
+                        <td>@item.Numero</td>
+                        <td>@item.CasaNome</td>
+                        <td>@item.InquilinoNome</td>
+                        <td>@Formatador.Data(item.DataInicio)</td>
+                        <td>@Formatador.Data(item.DataFim ?? item.DataTermino)</td>
+                        <td>@Formatador.Moeda(item.ValorAluguel)</td>
+                        <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
+                            @if (item.Status == StatusContrato.Ativo)
+                            {
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-sm btn-outline-danger" asp-action="Encerrar" asp-route-id="@item.Id">Encerrar</a>
+                            }
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
 </div>
-@{ ViewBag.Pagina = Model.Pagina; }
+@{
+    ViewBag.Pagina = Model.Pagina;
+}
 <partial name="_Paginacao" model="Model.TotalPaginas" />

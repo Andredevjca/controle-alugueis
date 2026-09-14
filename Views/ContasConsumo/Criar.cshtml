@@ -23,19 +23,44 @@
             <input asp-for="Referencia" class="form-control" placeholder="2026-08" />
             <span asp-validation-for="Referencia" class="text-danger"></span>
         </div>
-        <div class="col-md-4"><label asp-for="LeituraAnterior" class="form-label"></label><input asp-for="LeituraAnterior" class="form-control" /></div>
-        <div class="col-md-4"><label asp-for="LeituraAtual" class="form-label"></label><input asp-for="LeituraAtual" class="form-control" /></div>
-        <div class="col-md-4"><label asp-for="Consumo" class="form-label"></label><input asp-for="Consumo" class="form-control" /></div>
-        <div class="col-md-4"><label asp-for="Valor" class="form-label"></label><input asp-for="Valor" class="form-control" /><span asp-validation-for="Valor" class="text-danger"></span></div>
-        <div class="col-md-4"><label asp-for="Vencimento" class="form-label"></label><input asp-for="Vencimento" type="date" class="form-control" /></div>
+        <div class="col-md-4">
+            <label asp-for="LeituraAnterior" class="form-label"></label>
+            <input asp-for="LeituraAnterior" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="LeituraAtual" class="form-label"></label>
+            <input asp-for="LeituraAtual" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Consumo" class="form-label"></label>
+            <input asp-for="Consumo" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Valor" class="form-label"></label>
+            <input asp-for="Valor" class="form-control" />
+            <span asp-validation-for="Valor" class="text-danger"></span>
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Vencimento" class="form-label"></label>
+            <input asp-for="Vencimento" type="date" class="form-control" />
+        </div>
         <div class="col-md-4">
             <label asp-for="Status" class="form-label"></label>
             <select asp-for="Status" class="form-select">
-                <option>Pendente</option><option>Pago</option><option>Atrasado</option><option>Cancelado</option>
+                <option>Pendente</option>
+                <option>Pago</option>
+                <option>Atrasado</option>
+                <option>Cancelado</option>
             </select>
         </div>
-        <div class="col-md-4"><label asp-for="DataPagamento" class="form-label"></label><input asp-for="DataPagamento" type="date" class="form-control" /></div>
-        <div class="col-12"><label asp-for="Observacoes" class="form-label"></label><textarea asp-for="Observacoes" class="form-control" rows="3"></textarea></div>
+        <div class="col-md-4">
+            <label asp-for="DataPagamento" class="form-label"></label>
+            <input asp-for="DataPagamento" type="date" class="form-control" />
+        </div>
+        <div class="col-12">
+            <label asp-for="Observacoes" class="form-label"></label>
+            <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>
+        </div>
     </div>
     <div class="mt-4 d-flex gap-2">
         <button class="btn btn-success btn-modern"><i class="bi bi-save"></i> Salvar</button>

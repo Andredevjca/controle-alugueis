@@ -13,14 +13,14 @@
     </div>
 </div>
 <nav aria-label="Seções da casa" class="casa-tabs mb-3">
-<ul class="nav">
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="resumo"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="resumo" aria-current="@(Model.Aba == "resumo" ? "page" : null)"><i class="bi bi-house" aria-hidden="true"></i> Resumo</a></li>
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="contrato"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="contrato" aria-current="@(Model.Aba == "contrato" ? "page" : null)"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contrato</a></li>
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="financeiro"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="financeiro" aria-current="@(Model.Aba == "financeiro" ? "page" : null)"><i class="bi bi-cash-stack" aria-hidden="true"></i> Financeiro</a></li>
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="consumo"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="consumo" aria-current="@(Model.Aba == "consumo" ? "page" : null)"><i class="bi bi-lightning-charge" aria-hidden="true"></i> Água/Luz</a></li>
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="observacoes"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="observacoes" aria-current="@(Model.Aba == "observacoes" ? "page" : null)"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observações</a></li>
-    <li class="nav-item"><a class="nav-link @(Model.Aba=="historico"?"active":"")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="historico" aria-current="@(Model.Aba == "historico" ? "page" : null)"><i class="bi bi-clock-history" aria-hidden="true"></i> Histórico</a></li>
-</ul>
+    <ul class="nav">
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "resumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="resumo" aria-current="@(Model.Aba == "resumo" ? "page" : null)"><i class="bi bi-house" aria-hidden="true"></i> Resumo</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "contrato" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="contrato" aria-current="@(Model.Aba == "contrato" ? "page" : null)"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contrato</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "financeiro" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="financeiro" aria-current="@(Model.Aba == "financeiro" ? "page" : null)"><i class="bi bi-cash-stack" aria-hidden="true"></i> Financeiro</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "consumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="consumo" aria-current="@(Model.Aba == "consumo" ? "page" : null)"><i class="bi bi-lightning-charge" aria-hidden="true"></i> Água/Luz</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "observacoes" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="observacoes" aria-current="@(Model.Aba == "observacoes" ? "page" : null)"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observações</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "historico" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="historico" aria-current="@(Model.Aba == "historico" ? "page" : null)"><i class="bi bi-clock-history" aria-hidden="true"></i> Histórico</a></li>
+    </ul>
 </nav>
 
 @if (Model.Aba == "resumo")
@@ -69,15 +69,42 @@
         {
             var c = Model.ContratoAtual;
             <div class="row g-3">
-                <div class="col-md-4"><strong>Número</strong><div>@c.Numero</div></div>
-                <div class="col-md-4"><strong>Inquilino</strong><div>@c.InquilinoNome</div></div>
-                <div class="col-md-4"><strong>Status</strong><div><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></div></div>
-                <div class="col-md-4"><strong>Início</strong><div>@Formatador.Data(c.DataInicio)</div></div>
-                <div class="col-md-4"><strong>Término previsto</strong><div>@Formatador.Data(c.DataTermino)</div></div>
-                <div class="col-md-4"><strong>Aluguel</strong><div>@Formatador.Moeda(c.ValorAluguel)</div></div>
-                <div class="col-md-4"><strong>Caução</strong><div>@Formatador.Moeda(c.ValorCaucao) (@c.MesesCaucao mês/meses)</div></div>
-                <div class="col-md-4"><strong>Multa / Juros</strong><div>@c.PercentualMulta% / @c.PercentualJuros%</div></div>
-                <div class="col-md-4"><strong>Índice</strong><div>@(c.IndiceReajuste ?? "-")</div></div>
+                <div class="col-md-4">
+                    <strong>Número</strong>
+                    <div>@c.Numero</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Inquilino</strong>
+                    <div>@c.InquilinoNome</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Status</strong>
+                    <div><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Início</strong>
+                    <div>@Formatador.Data(c.DataInicio)</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Término previsto</strong>
+                    <div>@Formatador.Data(c.DataTermino)</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Aluguel</strong>
+                    <div>@Formatador.Moeda(c.ValorAluguel)</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Caução</strong>
+                    <div>@Formatador.Moeda(c.ValorCaucao) (@c.MesesCaucao mês/meses)</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Multa / Juros</strong>
+                    <div>@c.PercentualMulta% / @c.PercentualJuros%</div>
+                </div>
+                <div class="col-md-4">
+                    <strong>Índice</strong>
+                    <div>@(c.IndiceReajuste ?? "-")</div>
+                </div>
             </div>
             <div class="mt-3 d-flex gap-2">
                 <a class="btn btn-outline-secondary btn-modern" asp-controller="Contratos" asp-action="Detalhes" asp-route-id="@c.Id">Visualizar contrato</a>
@@ -98,27 +125,27 @@
             <table class="table table-modern">
                 <thead><tr><th>Data</th><th>Tipo</th><th>Descrição</th><th>Vencimento</th><th>Valor</th><th>Status</th><th></th></tr></thead>
                 <tbody>
-                @foreach (var l in Model.Lancamentos)
-                {
-                    <tr>
-                        <td>@Formatador.Data(l.DataLancamento)</td>
-                        <td>@l.Tipo / @l.Origem</td>
-                        <td>@l.Descricao</td>
-                        <td>@Formatador.Data(l.Vencimento)</td>
-                        <td>@Formatador.Moeda(l.Valor)</td>
-                        <td><span class="status-badge @Formatador.ClasseStatus(l.Status)">@l.Status</span></td>
-                        <td>
-                            @if (l.Status != StatusFinanceiro.Pago && l.Status != StatusFinanceiro.Cancelado)
-                            {
-                                <form asp-controller="Financeiro" asp-action="Pagar" asp-route-id="@l.Id" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path?aba=financeiro" />
-                                    <button class="btn btn-sm btn-success">Registrar pagamento</button>
-                                </form>
-                            }
-                        </td>
-                    </tr>
-                }
+                    @foreach (var l in Model.Lancamentos)
+                    {
+                        <tr>
+                            <td>@Formatador.Data(l.DataLancamento)</td>
+                            <td>@l.Tipo / @l.Origem</td>
+                            <td>@l.Descricao</td>
+                            <td>@Formatador.Data(l.Vencimento)</td>
+                            <td>@Formatador.Moeda(l.Valor)</td>
+                            <td><span class="status-badge @Formatador.ClasseStatus(l.Status)">@l.Status</span></td>
+                            <td>
+                                @if (l.Status != StatusFinanceiro.Pago && l.Status != StatusFinanceiro.Cancelado)
+                                {
+                                    <form asp-controller="Financeiro" asp-action="Pagar" asp-route-id="@l.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path?aba=financeiro" />
+                                        <button class="btn btn-sm btn-success">Registrar pagamento</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -155,14 +182,19 @@
             <table class="table table-modern">
                 <thead><tr><th>Referência</th><th>Anterior</th><th>Atual</th><th>Consumo</th><th>Valor</th><th>Vencimento</th><th>Pagamento</th><th>Status</th></tr></thead>
                 <tbody>
-                @foreach (var c in Model.ContasAgua)
-                {
-                    <tr>
-                        <td>@c.Referencia</td><td>@c.LeituraAnterior</td><td>@c.LeituraAtual</td><td>@c.Consumo</td>
-                        <td>@Formatador.Moeda(c.Valor)</td><td>@Formatador.Data(c.Vencimento)</td><td>@Formatador.Data(c.DataPagamento)</td>
-                        <td><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></td>
-                    </tr>
-                }
+                    @foreach (var c in Model.ContasAgua)
+                    {
+                        <tr>
+                            <td>@c.Referencia</td>
+                            <td>@c.LeituraAnterior</td>
+                            <td>@c.LeituraAtual</td>
+                            <td>@c.Consumo</td>
+                            <td>@Formatador.Moeda(c.Valor)</td>
+                            <td>@Formatador.Data(c.Vencimento)</td>
+                            <td>@Formatador.Data(c.DataPagamento)</td>
+                            <td><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -171,14 +203,19 @@
             <table class="table table-modern">
                 <thead><tr><th>Referência</th><th>Anterior</th><th>Atual</th><th>Consumo</th><th>Valor</th><th>Vencimento</th><th>Pagamento</th><th>Status</th></tr></thead>
                 <tbody>
-                @foreach (var c in Model.ContasLuz)
-                {
-                    <tr>
-                        <td>@c.Referencia</td><td>@c.LeituraAnterior</td><td>@c.LeituraAtual</td><td>@c.Consumo</td>
-                        <td>@Formatador.Moeda(c.Valor)</td><td>@Formatador.Data(c.Vencimento)</td><td>@Formatador.Data(c.DataPagamento)</td>
-                        <td><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></td>
-                    </tr>
-                }
+                    @foreach (var c in Model.ContasLuz)
+                    {
+                        <tr>
+                            <td>@c.Referencia</td>
+                            <td>@c.LeituraAnterior</td>
+                            <td>@c.LeituraAtual</td>
+                            <td>@c.Consumo</td>
+                            <td>@Formatador.Moeda(c.Valor)</td>
+                            <td>@Formatador.Data(c.Vencimento)</td>
+                            <td>@Formatador.Data(c.DataPagamento)</td>
+                            <td><span class="status-badge @Formatador.ClasseStatus(c.Status)">@c.Status</span></td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

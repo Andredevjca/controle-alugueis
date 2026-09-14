@@ -27,17 +27,37 @@
                 <option value="contas-luz">Contas de energia</option>
             </select>
         </div>
-        <div class="col-md-2"><label class="form-label">Início</label><input type="date" name="dataInicio" value="@(Model.DataInicio?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">Fim</label><input type="date" name="dataFim" value="@(Model.DataFim?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
-        <div class="col-md-2"><label class="form-label">Casa</label><select name="casaId" class="form-select" asp-items="Model.Casas"><option value="">Todas</option></select></div>
-        <div class="col-md-2"><label class="form-label">Inquilino</label><select name="inquilinoId" class="form-select" asp-items="Model.Inquilinos"><option value="">Todos</option></select></div>
+        <div class="col-md-2">
+            <label class="form-label">Início</label>
+            <input type="date" name="dataInicio" value="@(Model.DataInicio?.ToString("yyyy-MM-dd"))" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Fim</label>
+            <input type="date" name="dataFim" value="@(Model.DataFim?.ToString("yyyy-MM-dd"))" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Casa</label>
+            <select name="casaId" class="form-select" asp-items="Model.Casas">
+                <option value="">Todas</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Inquilino</label>
+            <select name="inquilinoId" class="form-select" asp-items="Model.Inquilinos">
+                <option value="">Todos</option>
+            </select>
+        </div>
         <div class="col-md-3">
             <label class="form-label">Status</label>
             <select name="status" class="form-select">
                 <option value="">Todos</option>
-                <option>Pendente</option><option>Pago</option><option>Atrasado</option>
-                <option>Ativo</option><option>Encerrado</option>
-                <option>Alugada</option><option>Disponível</option>
+                <option>Pendente</option>
+                <option>Pago</option>
+                <option>Atrasado</option>
+                <option>Ativo</option>
+                <option>Encerrado</option>
+                <option>Alugada</option>
+                <option>Disponível</option>
             </select>
         </div>
         <div class="col-md-3 d-flex align-items-end"><button class="btn btn-success btn-modern w-100"><i class="bi bi-bar-chart"></i> Gerar</button></div>
@@ -62,19 +82,19 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach (var linha in Model.Linhas)
-            {
-                <tr>
-                    @foreach (var coluna in Model.Colunas)
-                    {
-                        <td>@(linha.ContainsKey(coluna) ? linha[coluna] : "-")</td>
-                    }
-                </tr>
-            }
-            @if (!Model.Linhas.Any())
-            {
-                <tr><td colspan="@Math.Max(1, Model.Colunas.Count())" class="text-muted">Nenhum registro encontrado para os filtros informados.</td></tr>
-            }
+                @foreach (var linha in Model.Linhas)
+                {
+                    <tr>
+                        @foreach (var coluna in Model.Colunas)
+                        {
+                            <td>@(linha.ContainsKey(coluna) ? linha[coluna] : "-")</td>
+                        }
+                    </tr>
+                }
+                @if (!Model.Linhas.Any())
+                {
+                    <tr><td colspan="@Math.Max(1, Model.Colunas.Count())" class="text-muted">Nenhum registro encontrado para os filtros informados.</td></tr>
+                }
             </tbody>
         </table>
     </div>

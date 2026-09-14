@@ -8,13 +8,34 @@
 </div>
 <div class="content-card p-4">
     <div class="row g-3">
-        <div class="col-md-4"><strong>Início</strong><div>@Formatador.Data(Model.DataInicio)</div></div>
-        <div class="col-md-4"><strong>Término previsto</strong><div>@Formatador.Data(Model.DataTermino)</div></div>
-        <div class="col-md-4"><strong>Data de saída</strong><div>@Formatador.Data(Model.DataFim)</div></div>
-        <div class="col-md-4"><strong>Aluguel</strong><div>@Formatador.Moeda(Model.ValorAluguel)</div></div>
-        <div class="col-md-4"><strong>Dia vencimento</strong><div>@Model.DiaVencimento</div></div>
-        <div class="col-md-4"><strong>Caução</strong><div>@Formatador.Moeda(Model.ValorCaucao)</div></div>
-        <div class="col-12"><strong>Observações</strong><div>@(Model.Observacoes ?? "-")</div></div>
+        <div class="col-md-4">
+            <strong>Início</strong>
+            <div>@Formatador.Data(Model.DataInicio)</div>
+        </div>
+        <div class="col-md-4">
+            <strong>Término previsto</strong>
+            <div>@Formatador.Data(Model.DataTermino)</div>
+        </div>
+        <div class="col-md-4">
+            <strong>Data de saída</strong>
+            <div>@Formatador.Data(Model.DataFim)</div>
+        </div>
+        <div class="col-md-4">
+            <strong>Aluguel</strong>
+            <div>@Formatador.Moeda(Model.ValorAluguel)</div>
+        </div>
+        <div class="col-md-4">
+            <strong>Dia vencimento</strong>
+            <div>@Model.DiaVencimento</div>
+        </div>
+        <div class="col-md-4">
+            <strong>Caução</strong>
+            <div>@Formatador.Moeda(Model.ValorCaucao)</div>
+        </div>
+        <div class="col-12">
+            <strong>Observações</strong>
+            <div>@(Model.Observacoes ?? "-")</div>
+        </div>
     </div>
     @if (Model.Status == StatusContrato.Ativo)
     {

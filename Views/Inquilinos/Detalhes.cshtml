@@ -41,17 +41,17 @@
         <table class="table table-modern">
             <thead><tr><th>Casa</th><th>Contrato</th><th>Entrada</th><th>Saída</th><th>Aluguel</th><th>Status</th></tr></thead>
             <tbody>
-            @foreach (var h in Model.HistoricoContratos)
-            {
-                <tr>
-                    <td>@h.NomeInquilino</td>
-                    <td>@h.NumeroContrato</td>
-                    <td>@Formatador.Data(h.DataEntrada)</td>
-                    <td>@Formatador.Data(h.DataSaida)</td>
-                    <td>@Formatador.Moeda(h.ValorAluguel)</td>
-                    <td><span class="status-badge @Formatador.ClasseStatus(h.Status)">@h.Status</span></td>
-                </tr>
-            }
+                @foreach (var h in Model.HistoricoContratos)
+                {
+                    <tr>
+                        <td>@h.NomeInquilino</td>
+                        <td>@h.NumeroContrato</td>
+                        <td>@Formatador.Data(h.DataEntrada)</td>
+                        <td>@Formatador.Data(h.DataSaida)</td>
+                        <td>@Formatador.Moeda(h.ValorAluguel)</td>
+                        <td><span class="status-badge @Formatador.ClasseStatus(h.Status)">@h.Status</span></td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -62,15 +62,15 @@
         <table class="table table-modern">
             <thead><tr><th>Descrição</th><th>Vencimento</th><th>Valor</th><th>Status</th></tr></thead>
             <tbody>
-            @foreach (var l in Model.HistoricoFinanceiro)
-            {
-                <tr>
-                    <td>@l.Descricao</td>
-                    <td>@Formatador.Data(l.Vencimento)</td>
-                    <td>@Formatador.Moeda(l.Valor)</td>
-                    <td><span class="status-badge @Formatador.ClasseStatus(l.Status)">@l.Status</span></td>
-                </tr>
-            }
+                @foreach (var l in Model.HistoricoFinanceiro)
+                {
+                    <tr>
+                        <td>@l.Descricao</td>
+                        <td>@Formatador.Data(l.Vencimento)</td>
+                        <td>@Formatador.Moeda(l.Valor)</td>
+                        <td><span class="status-badge @Formatador.ClasseStatus(l.Status)">@l.Status</span></td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

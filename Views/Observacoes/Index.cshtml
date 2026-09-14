@@ -11,11 +11,20 @@
         <div class="col-md-3">
             <select name="tipo" class="form-select">
                 <option value="">Tipo</option>
-                <option>Casa</option><option>Contrato</option><option>Inquilino</option>
-                <option>Financeiro</option><option>Água</option><option>Luz</option><option>Manutenção</option>
+                <option>Casa</option>
+                <option>Contrato</option>
+                <option>Inquilino</option>
+                <option>Financeiro</option>
+                <option>Água</option>
+                <option>Luz</option>
+                <option>Manutenção</option>
             </select>
         </div>
-        <div class="col-md-3"><select name="casaId" class="form-select" asp-items="Model.Casas"><option value="">Casa</option></select></div>
+        <div class="col-md-3">
+            <select name="casaId" class="form-select" asp-items="Model.Casas">
+                <option value="">Casa</option>
+            </select>
+        </div>
         <div class="col-md-4"><input name="busca" value="@Model.Busca" class="form-control" placeholder="Buscar título ou descrição" /></div>
         <div class="col-md-2"><button class="btn btn-outline-secondary w-100">Filtrar</button></div>
     </div>
