@@ -27,7 +27,7 @@ public class ServicoAutenticacao : IServicoAutenticacao
             {
                 Nome = "Administrador",
                 Email = "admin@sistema.com",
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                SenhaHash = SenhaHelper.GerarHash("Admin@123"),
                 Perfil = PerfilUsuario.Administrador,
                 Ativo = true
             });
@@ -46,6 +46,6 @@ public class ServicoAutenticacao : IServicoAutenticacao
             return null;
         }
 
-        return BCrypt.Net.BCrypt.Verify(senha, usuario.SenhaHash) ? usuario : null;
+        return SenhaHelper.Verificar(senha, usuario.SenhaHash) ? usuario : null;
     }
 }

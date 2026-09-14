@@ -1,3 +1,4 @@
+using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Models;
@@ -22,7 +23,7 @@ public class ServicoUsuario : IServicoUsuario
         return await _repositorio.InserirAsync(new Usuario
         {
             Nome = modelo.Nome, Email = modelo.Email,
-            SenhaHash = BCrypt.Net.BCrypt.HashPassword(modelo.Senha),
+            SenhaHash = SenhaHelper.GerarHash(modelo.Senha),
             Perfil = modelo.Perfil, Ativo = true
         });
     }
@@ -45,6 +46,6 @@ public class ServicoUsuario : IServicoUsuario
             Perfil = modelo.Perfil, Ativo = modelo.Ativo
         });
         if (!string.IsNullOrWhiteSpace(modelo.Senha))
-            await _repositorio.AtualizarSenhaAsync(modelo.Id, BCrypt.Net.BCrypt.HashPassword(modelo.Senha));
+            await _repositorio.AtualizarSenhaAsync(modelo.Id, SenhaHelper.GerarHash(modelo.Senha));
     }
 }
