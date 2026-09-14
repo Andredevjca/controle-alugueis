@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
@@ -11,10 +12,13 @@ public class ServicoContrato : IServicoContrato
     private readonly IRepositorioContrato _repositorio;
     private readonly IRepositorioCasa _casas;
 
+    private readonly IRepositorioInquilino _inquilinos;
+
     public ServicoContrato(
         IRepositorioContrato repositorio,
-        IRepositorioCasa casas)
+        IRepositorioCasa casas, IRepositorioInquilino inquilinos)
     {
+        _inquilinos = inquilinos;
         _repositorio = repositorio;
         _casas = casas;
     }
@@ -105,4 +109,67 @@ public class ServicoContrato : IServicoContrato
         Observacoes = m.Observacoes,
         Status = StatusContrato.Ativo
     };
+
+    public async Task<ContratoListaViewModel> ObterListaAsync(string? busca, string? status, int pagina = 1)
+    {
+        const int tamanho = 10;
+
+        var (itens, total) = await ListarAsync(busca, status, pagina, tamanho);
+
+        return new ContratoListaViewModel
+        {
+            Itens = itens,
+            Busca = busca,
+            Status = status,
+            Pagina = pagina,
+            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho))
+        };
+    }
+
+    public async Task<ContratoViewModel> PrepararFormularioAsync(ContratoViewModel modelo)
+    {
+
+        var listaCasas = await _casas.ListarTodasAsync();
+        var listaInquilinos = await _inquilinos.ListarTodosAsync();
+        modelo.Casas = listaCasas.Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
+        modelo.Inquilinos = listaInquilinos.Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
+        return modelo;
+
+    }
+
+    public async Task<ContratoViewModel?> ObterFormularioAsync(int id)
+    {
+        var entidade = await ObterAsync(id);
+        if (entidade == null) return null;
+        return await PrepararFormularioAsync(ParaFormulario(entidade));
+    }
+
+    public async Task<ContratoViewModel> NovoFormularioAsync(int? casaId, int? inquilinoId)
+    {
+        return await PrepararFormularioAsync(new ContratoViewModel { CasaId = casaId ?? 0, InquilinoId = inquilinoId ?? 0, Numero = $"{DateTime.Today:yyyy}/{DateTime.Today.Month:00}" });
+    }
+
+    public async Task<EncerrarContratoViewModel?> ObterEncerramentoAsync(int id)
+    {
+var contrato = await ObterAsync(id);
+if (contrato == null) return null;
+return new EncerrarContratoViewModel
+        {
+            Id = contrato.Id,
+            Numero = contrato.Numero,
+            CasaNome = contrato.CasaNome ?? "",
+            InquilinoNome = contrato.InquilinoNome ?? "",
+            DataSaida = DateTime.Today
+        };
+    }
+
+    public Task CancelarAsync(int id)
+    {
+        return EncerrarAsync(id, DateTime.Today, StatusContrato.Cancelado);
+    }
+
+    public Task EncerrarAsync(EncerrarContratoViewModel modelo)
+    {
+        return EncerrarAsync(modelo.Id, modelo.DataSaida, StatusContrato.Encerrado);
+    }
 }

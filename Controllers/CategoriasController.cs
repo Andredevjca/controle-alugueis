@@ -4,26 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Interfaces.Repositories;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
 public class CategoriasController : Controller
 {
-    private readonly IRepositorioCategoria _repositorio;
+    private readonly IServicoCategoria _servico;
 
     public CategoriasController(
-        IRepositorioCategoria repositorio)
+        IServicoCategoria servico)
     {
-        _repositorio = repositorio;
+        _servico = servico;
     }
 
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Categorias";
-        return View(await _repositorio.ListarAsync());
+        return View(await _servico.ListarAsync());
     }
 
     public IActionResult Criar()
@@ -37,7 +35,7 @@ public class CategoriasController : Controller
     public async Task<IActionResult> Criar(CategoriaViewModel modelo)
     {
         if (!ModelState.IsValid) return View(modelo);
-        await _repositorio.InserirAsync(new CategoriaFinanceira { Nome = modelo.Nome, Tipo = modelo.Tipo, Ativo = true });
+        await _servico.CriarAsync(modelo);
         TempData["Sucesso"] = "Categoria cadastrada.";
         return RedirectToAction(nameof(Index));
     }

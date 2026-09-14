@@ -11,4 +11,6 @@ public interface IServicoCasa
     Task<int> SalvarAsync(CasaViewModel modelo);
     Task ExcluirAsync(int id);
     Task<CasaDetalhesViewModel> ObterDetalhesAsync(int id, string aba = "resumo");
+    Task<CasaListaViewModel> ObterListaAsync(string? busca, string? status, int pagina = 1);
+    Task<CasaViewModel?> ObterFormularioAsync(int id);
 }

@@ -4,26 +4,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Interfaces.Repositories;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
 public class UsuariosController : Controller
 {
-    private readonly IRepositorioUsuario _repositorio;
+    private readonly IServicoUsuario _servico;
 
     public UsuariosController(
-        IRepositorioUsuario repositorio)
+        IServicoUsuario servico)
     {
-        _repositorio = repositorio;
+        _servico = servico;
     }
 
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Usuários";
-        return View(await _repositorio.ListarAsync());
+        return View(await _servico.ListarAsync());
     }
 
     public IActionResult Criar()
@@ -36,37 +34,26 @@ public class UsuariosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Criar(UsuarioViewModel modelo)
     {
-        if (string.IsNullOrWhiteSpace(modelo.Senha))
-        {
-            ModelState.AddModelError(nameof(modelo.Senha), "A senha é obrigatória.");
-        }
-
         if (!ModelState.IsValid) return View(modelo);
-        await _repositorio.InserirAsync(new Usuario
+        try
         {
-            Nome = modelo.Nome,
-            Email = modelo.Email,
-            SenhaHash = BCrypt.Net.BCrypt.HashPassword(modelo.Senha),
-            Perfil = modelo.Perfil,
-            Ativo = true
-        });
+            await _servico.CriarAsync(modelo);
+        }
+        catch (System.ComponentModel.DataAnnotations.ValidationException ex)
+        {
+            ModelState.AddModelError(nameof(modelo.Senha), ex.Message);
+            return View(modelo);
+        }
         TempData["Sucesso"] = "Usuário cadastrado.";
-        return RedirectToAction(nameof(Index));
+return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Editar(int id)
     {
-        var usuario = await _repositorio.ObterPorIdAsync(id);
-        if (usuario == null) return NotFound();
+        var modelo = await _servico.ObterFormularioAsync(id);
+        if (modelo == null) return NotFound();
         ViewData["Title"] = "Editar usuário";
-        return View(new UsuarioViewModel
-        {
-            Id = usuario.Id,
-            Nome = usuario.Nome,
-            Email = usuario.Email,
-            Perfil = usuario.Perfil,
-            Ativo = usuario.Ativo
-        });
+        return View(modelo);
     }
 
     [HttpPost]
@@ -75,19 +62,7 @@ public class UsuariosController : Controller
     {
         modelo.Id = id;
         if (!ModelState.IsValid) return View(modelo);
-        await _repositorio.AtualizarAsync(new Usuario
-        {
-            Id = id,
-            Nome = modelo.Nome,
-            Email = modelo.Email,
-            Perfil = modelo.Perfil,
-            Ativo = modelo.Ativo
-        });
-        if (!string.IsNullOrWhiteSpace(modelo.Senha))
-        {
-            await _repositorio.AtualizarSenhaAsync(id, BCrypt.Net.BCrypt.HashPassword(modelo.Senha));
-        }
-
+        await _servico.AtualizarAsync(modelo);
         TempData["Sucesso"] = "Usuário atualizado.";
         return RedirectToAction(nameof(Index));
     }

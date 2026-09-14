@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Interfaces.Services;
 using System.Globalization;
 using SistemaAlugueis.Helpers;
@@ -11,9 +12,12 @@ public class ServicoContaConsumo : IServicoContaConsumo
 {
     private readonly IRepositorioContaConsumo _repositorio;
 
+    private readonly IRepositorioCasa _casas;
+
     public ServicoContaConsumo(
-        IRepositorioContaConsumo repositorio)
+        IRepositorioContaConsumo repositorio, IRepositorioCasa casas)
     {
+        _casas = casas;
         _repositorio = repositorio;
     }
 
@@ -79,4 +83,38 @@ public class ServicoContaConsumo : IServicoContaConsumo
         Status = m.Status,
         Observacoes = m.Observacoes
     };
+
+    public async Task<ContaConsumoListaViewModel> ObterListaAsync(string? tipo, int? casaId, string? status, string? busca, int pagina = 1)
+    {
+        const int tamanho = 15;
+
+        var (itens, total) = await ListarAsync(tipo, casaId, status, busca, pagina, tamanho);
+
+        return new ContaConsumoListaViewModel
+        {
+            Itens = itens,
+            Tipo = tipo,
+            CasaId = casaId,
+            Status = status,
+            Busca = busca,
+            Pagina = pagina,
+            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho)),
+            Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId))
+        };
+    }
+
+    public async Task<ContaConsumoViewModel> PrepararFormularioAsync(ContaConsumoViewModel modelo)
+    {
+
+        modelo.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
+        return modelo;
+
+    }
+
+    public async Task<ContaConsumoViewModel?> ObterFormularioAsync(int id)
+    {
+        var entidade = await ObterAsync(id);
+        if (entidade == null) return null;
+        return await PrepararFormularioAsync(ParaFormulario(entidade));
+    }
 }

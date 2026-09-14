@@ -31,6 +31,9 @@ public static class InjecaoDependencias
         services.AddScoped<IServicoRelatorio, ServicoRelatorio>();
         services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
 
+        services.AddScoped<IServicoCategoria, ServicoCategoria>();
+        services.AddScoped<IServicoConfiguracao, ServicoConfiguracao>();
+        services.AddScoped<IServicoUsuario, ServicoUsuario>();
         return services;
     }
 }

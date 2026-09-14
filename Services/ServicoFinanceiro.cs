@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Interfaces.Services;
 using System.Globalization;
 using SistemaAlugueis.Helpers;
@@ -13,8 +14,14 @@ public class ServicoFinanceiro : IServicoFinanceiro
     private readonly IRepositorioCategoria _categorias;
     private readonly IRepositorioContrato _contratos;
 
-    public ServicoFinanceiro(IRepositorioFinanceiro financeiro, IRepositorioCategoria categorias, IRepositorioContrato contratos)
+    private readonly IRepositorioCasa _casas;
+
+    private readonly IRepositorioInquilino _inquilinos;
+
+    public ServicoFinanceiro(IRepositorioFinanceiro financeiro, IRepositorioCategoria categorias, IRepositorioContrato contratos, IRepositorioCasa casas, IRepositorioInquilino inquilinos)
     {
+        _inquilinos = inquilinos;
+        _casas = casas;
         _financeiro = financeiro;
         _categorias = categorias;
         _contratos = contratos;
@@ -165,4 +172,52 @@ public class ServicoFinanceiro : IServicoFinanceiro
         Status = m.Status,
         Observacoes = m.Observacoes
     };
+
+    public async Task<FinanceiroListaViewModel> ObterListaAsync(string? tipo, string? status, int? casaId, int? categoriaId,
+        DateTime? dataInicio, DateTime? dataFim, string? busca, int pagina = 1)
+    {
+        const int tamanho = 15;
+
+        status = string.IsNullOrWhiteSpace(status) ? "Abertos" : status;
+
+        var (itens, total) = await ListarAsync(tipo, status, casaId, categoriaId, dataInicio, dataFim, busca, pagina, tamanho);
+
+        return new FinanceiroListaViewModel
+        {
+            Itens = itens,
+            Tipo = tipo,
+            Status = status,
+            CasaId = casaId,
+            CategoriaId = categoriaId,
+            DataInicio = dataInicio,
+            DataFim = dataFim,
+            Busca = busca,
+            Pagina = pagina,
+            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho)),
+            Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId)),
+            Categorias = (await ListarCategoriasAsync()).Select(c => new SelectListItem($"{c.Nome} ({c.Tipo})", c.Id.ToString(), c.Id == categoriaId))
+        };
+    }
+
+    public async Task<FinanceiroViewModel> PrepararFormularioAsync(FinanceiroViewModel modelo)
+    {
+
+        modelo.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
+        modelo.Inquilinos = (await _inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
+        modelo.Categorias = (await ListarCategoriasAsync(modelo.Tipo)).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CategoriaId));
+        return modelo;
+
+    }
+
+    public async Task<FinanceiroViewModel?> ObterFormularioAsync(int id)
+    {
+        var entidade = await ObterAsync(id);
+        if (entidade == null) return null;
+        return await PrepararFormularioAsync(ParaFormulario(entidade));
+    }
+
+    public async Task<FinanceiroViewModel> NovoFormularioAsync(string tipo, int? casaId)
+    {
+        return await PrepararFormularioAsync(new FinanceiroViewModel { Tipo = tipo, CasaId = casaId, Origem = tipo == TipoLancamento.Despesa ? OrigemDespesa.Manutencao : OrigemReceita.Aluguel });
+    }
 }

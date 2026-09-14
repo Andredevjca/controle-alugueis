@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using SistemaAlugueis.Interfaces.Services;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
@@ -17,15 +16,7 @@ public class InquilinosController : Controller
     public async Task<IActionResult> Index(string? busca, int pagina = 1)
     {
         ViewData["Title"] = "Inquilinos";
-        const int tamanho = 10;
-        var (itens, total) = await _servico.ListarAsync(busca, pagina, tamanho);
-        return View(new InquilinoListaViewModel
-        {
-            Itens = itens,
-            Busca = busca,
-            Pagina = pagina,
-            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho))
-        });
+        return View(await _servico.ObterListaAsync(busca, pagina));
     }
 
     public async Task<IActionResult> Detalhes(int id)
@@ -61,8 +52,8 @@ public class InquilinosController : Controller
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar inquilino";
-        var item = await _servico.ObterAsync(id);
-        return item == null ? NotFound() : View(ServicoInquilino.ParaFormulario(item));
+        var item = await _servico.ObterFormularioAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
     [HttpPost]

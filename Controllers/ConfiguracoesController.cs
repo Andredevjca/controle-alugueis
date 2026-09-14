@@ -4,32 +4,30 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
-using SistemaAlugueis.Interfaces.Repositories;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
 
 public class ConfiguracoesController : Controller
 {
-    private readonly IRepositorioConfiguracao _repositorio;
+    private readonly IServicoConfiguracao _servico;
 
-    public ConfiguracoesController(IRepositorioConfiguracao repositorio)
+    public ConfiguracoesController(IServicoConfiguracao servico)
     {
-        _repositorio = repositorio;
+        _servico = servico;
     }
 
     public async Task<IActionResult> Index()
     {
         ViewData["Title"] = "Configurações";
-        return View(new ConfiguracaoViewModel { Itens = await _repositorio.ListarAsync() });
+        return View(await _servico.ObterAsync());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Index(int id, string? valor)
     {
-        await _repositorio.AtualizarAsync(id, valor);
+        await _servico.AtualizarAsync(id, valor);
         TempData["Sucesso"] = "Configuração atualizada.";
         return RedirectToAction(nameof(Index));
     }

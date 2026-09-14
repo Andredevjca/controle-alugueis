@@ -9,4 +9,6 @@ public interface IServicoObservacao
     Task<Observacao?> ObterAsync(int id);
     Task<int> SalvarAsync(ObservacaoViewModel modelo, int? usuarioId);
     Task ExcluirAsync(int id);
+    Task<ObservacaoListaViewModel> ObterListaAsync(string? tipo, int? casaId, string? busca);
+    Task<ObservacaoViewModel> PrepararFormularioAsync(ObservacaoViewModel modelo);
 }

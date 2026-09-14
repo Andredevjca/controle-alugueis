@@ -11,4 +11,6 @@ public interface IServicoInquilino
     Task<int> SalvarAsync(InquilinoViewModel modelo);
     Task ExcluirAsync(int id);
     Task<InquilinoDetalhesViewModel> ObterDetalhesAsync(int id);
+    Task<InquilinoListaViewModel> ObterListaAsync(string? busca, int pagina = 1);
+    Task<InquilinoViewModel?> ObterFormularioAsync(int id);
 }

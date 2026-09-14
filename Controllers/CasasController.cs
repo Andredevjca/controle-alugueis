@@ -1,6 +1,5 @@
 using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
@@ -17,25 +16,7 @@ public class CasasController : Controller
     public async Task<IActionResult> Index(string? busca, string? status, int pagina = 1)
     {
         ViewData["Title"] = "Casas";
-        const int tamanho = 10;
-        var (itens, total) = await _servico.ListarAsync(busca, status, pagina, tamanho);
-        return View(new CasaListaViewModel
-        {
-            Busca = busca,
-            Status = status,
-            Pagina = pagina,
-            TotalRegistros = total,
-            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho)),
-            Itens = itens.Select(c => new CasaListaItemViewModel
-            {
-                Id = c.Id,
-                Nome = c.Nome,
-                EnderecoCompleto = $"{c.Endereco}, {c.Numero} - {c.Bairro}, {c.Cidade}/{c.Estado}",
-                ValorAluguel = c.ValorAluguel,
-                InquilinoAtual = c.InquilinoAtual,
-                Status = c.Status
-            })
-        });
+        return View(await _servico.ObterListaAsync(busca, status, pagina));
     }
 
     public async Task<IActionResult> Detalhes(int id, string aba = "resumo")
@@ -83,13 +64,13 @@ public class CasasController : Controller
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar casa";
-        var casa = await _servico.ObterAsync(id);
+        var casa = await _servico.ObterFormularioAsync(id);
         if (casa == null)
         {
             return NotFound();
         }
 
-        return View(ServicoCasa.ParaFormulario(casa));
+        return View(casa);
     }
 
     [HttpPost]

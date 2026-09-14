@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Models;
@@ -119,4 +120,26 @@ public class ServicoInquilino : IServicoInquilino
         EnderecoAnterior = m.EnderecoAnterior,
         Observacoes = m.Observacoes
     };
+
+    public async Task<InquilinoListaViewModel> ObterListaAsync(string? busca, int pagina = 1)
+    {
+        const int tamanho = 10;
+
+        var (itens, total) = await ListarAsync(busca, pagina, tamanho);
+
+        return new InquilinoListaViewModel
+        {
+            Itens = itens,
+            Busca = busca,
+            Pagina = pagina,
+            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho))
+        };
+    }
+
+    public async Task<InquilinoViewModel?> ObterFormularioAsync(int id)
+    {
+        var entidade = await ObterAsync(id);
+        if (entidade == null) return null;
+        return ParaFormulario(entidade);
+    }
 }

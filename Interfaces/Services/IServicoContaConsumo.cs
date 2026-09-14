@@ -10,4 +10,7 @@ public interface IServicoContaConsumo
     Task<int> SalvarAsync(ContaConsumoViewModel modelo);
     Task CancelarAsync(int id);
     Task MarcarPagoAsync(int id);
+    Task<ContaConsumoListaViewModel> ObterListaAsync(string? tipo, int? casaId, string? status, string? busca, int pagina = 1);
+    Task<ContaConsumoViewModel> PrepararFormularioAsync(ContaConsumoViewModel modelo);
+    Task<ContaConsumoViewModel?> ObterFormularioAsync(int id);
 }

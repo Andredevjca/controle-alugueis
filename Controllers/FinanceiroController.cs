@@ -2,7 +2,6 @@ using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
-using SistemaAlugueis.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;
@@ -10,44 +9,23 @@ namespace SistemaAlugueis.Controllers;
 public class FinanceiroController : Controller
 {
     private readonly IServicoFinanceiro _servico;
-    private readonly IServicoCasa _casas;
-    private readonly IServicoInquilino _inquilinos;
 
-    public FinanceiroController(IServicoFinanceiro servico, IServicoCasa casas, IServicoInquilino inquilinos)
+    public FinanceiroController(IServicoFinanceiro servico)
     {
         _servico = servico;
-        _casas = casas;
-        _inquilinos = inquilinos;
     }
 
     public async Task<IActionResult> Index(string? tipo, string? status, int? casaId, int? categoriaId,
         DateTime? dataInicio, DateTime? dataFim, string? busca, int pagina = 1)
     {
         ViewData["Title"] = "Financeiro";
-        const int tamanho = 15;
-        status = string.IsNullOrWhiteSpace(status) ? "Abertos" : status;
-        var (itens, total) = await _servico.ListarAsync(tipo, status, casaId, categoriaId, dataInicio, dataFim, busca, pagina, tamanho);
-        return View(new FinanceiroListaViewModel
-        {
-            Itens = itens,
-            Tipo = tipo,
-            Status = status,
-            CasaId = casaId,
-            CategoriaId = categoriaId,
-            DataInicio = dataInicio,
-            DataFim = dataFim,
-            Busca = busca,
-            Pagina = pagina,
-            TotalPaginas = Math.Max(1, (int)Math.Ceiling(total / (double)tamanho)),
-            Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == casaId)),
-            Categorias = (await _servico.ListarCategoriasAsync()).Select(c => new SelectListItem($"{c.Nome} ({c.Tipo})", c.Id.ToString(), c.Id == categoriaId))
-        });
+        return View(await _servico.ObterListaAsync(tipo, status, casaId, categoriaId, dataInicio, dataFim, busca, pagina));
     }
 
     public async Task<IActionResult> Criar(string tipo = TipoLancamento.Receita, int? casaId = null)
     {
         ViewData["Title"] = tipo == TipoLancamento.Despesa ? "Nova despesa" : "Nova receita";
-        return View(await Montar(new FinanceiroViewModel { Tipo = tipo, CasaId = casaId, Origem = tipo == TipoLancamento.Despesa ? OrigemDespesa.Manutencao : OrigemReceita.Aluguel }));
+        return View(await _servico.NovoFormularioAsync(tipo, casaId));
     }
 
     [HttpPost]
@@ -55,7 +33,7 @@ public class FinanceiroController : Controller
     public async Task<IActionResult> Criar(FinanceiroViewModel modelo)
     {
         ViewData["Title"] = modelo.Tipo == TipoLancamento.Despesa ? "Nova despesa" : "Nova receita";
-        if (!ModelState.IsValid) return View(await Montar(modelo));
+        if (!ModelState.IsValid) return View(await _servico.PrepararFormularioAsync(modelo));
         await _servico.SalvarAsync(modelo);
         TempData["Sucesso"] = "Lançamento cadastrado com sucesso.";
         return RedirectToAction(nameof(Index));
@@ -64,8 +42,8 @@ public class FinanceiroController : Controller
     public async Task<IActionResult> Editar(int id)
     {
         ViewData["Title"] = "Editar lançamento";
-        var item = await _servico.ObterAsync(id);
-        return item == null ? NotFound() : View(await Montar(ServicoFinanceiro.ParaFormulario(item)));
+        var item = await _servico.ObterFormularioAsync(id);
+        return item == null ? NotFound() : View(item);
     }
 
     [HttpPost]
@@ -74,7 +52,7 @@ public class FinanceiroController : Controller
     {
         ViewData["Title"] = "Editar lançamento";
         modelo.Id = id;
-        if (!ModelState.IsValid) return View(await Montar(modelo));
+        if (!ModelState.IsValid) return View(await _servico.PrepararFormularioAsync(modelo));
         await _servico.SalvarAsync(modelo);
         TempData["Sucesso"] = "Lançamento atualizado com sucesso.";
         return RedirectToAction(nameof(Index));
@@ -96,13 +74,5 @@ public class FinanceiroController : Controller
         await _servico.CancelarAsync(id);
         TempData["Sucesso"] = "Lançamento cancelado.";
         return RedirectToAction(nameof(Index));
-    }
-
-    private async Task<FinanceiroViewModel> Montar(FinanceiroViewModel modelo)
-    {
-        modelo.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CasaId));
-        modelo.Inquilinos = (await _inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == modelo.InquilinoId));
-        modelo.Categorias = (await _servico.ListarCategoriasAsync(modelo.Tipo)).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == modelo.CategoriaId));
-        return modelo;
     }
 }

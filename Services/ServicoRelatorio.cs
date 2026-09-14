@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Helpers;
 using SistemaAlugueis.Interfaces.Repositories;
@@ -12,12 +13,15 @@ public class ServicoRelatorio : IServicoRelatorio
     private readonly IRepositorioFinanceiro _financeiro;
     private readonly IRepositorioContaConsumo _consumo;
 
+    private readonly IRepositorioInquilino _inquilinos;
+
     public ServicoRelatorio(
         IRepositorioCasa casas,
         IRepositorioContrato contratos,
         IRepositorioFinanceiro financeiro,
-        IRepositorioContaConsumo consumo)
+        IRepositorioContaConsumo consumo, IRepositorioInquilino inquilinos)
     {
+        _inquilinos = inquilinos;
         _casas = casas;
         _contratos = contratos;
         _financeiro = financeiro;
@@ -26,6 +30,12 @@ public class ServicoRelatorio : IServicoRelatorio
 
     public async Task<RelatorioViewModel> GerarAsync(RelatorioViewModel filtro)
     {
+        filtro.TipoRelatorio = string.IsNullOrWhiteSpace(filtro.TipoRelatorio) ? "casas" : filtro.TipoRelatorio;
+
+        filtro.Casas = (await _casas.ListarTodasAsync()).Select(c => new SelectListItem(c.Nome, c.Id.ToString(), c.Id == filtro.CasaId));
+
+        filtro.Inquilinos = (await _inquilinos.ListarTodosAsync()).Select(i => new SelectListItem(i.NomeCompleto, i.Id.ToString(), i.Id == filtro.InquilinoId));
+
         var inicio = filtro.DataInicio ?? new DateTime(DateTime.Today.Year, 1, 1);
         var fim = filtro.DataFim ?? DateTime.Today;
         filtro.Titulo = Titulo(filtro.TipoRelatorio);

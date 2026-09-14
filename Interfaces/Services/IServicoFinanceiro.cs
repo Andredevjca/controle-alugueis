@@ -12,4 +12,9 @@ public interface IServicoFinanceiro
     Task<int> SalvarAsync(FinanceiroViewModel modelo);
     Task CancelarAsync(int id);
     Task MarcarPagoAsync(int id);
+    Task<FinanceiroListaViewModel> ObterListaAsync(string? tipo, string? status, int? casaId, int? categoriaId,
+        DateTime? dataInicio, DateTime? dataFim, string? busca, int pagina = 1);
+    Task<FinanceiroViewModel> PrepararFormularioAsync(FinanceiroViewModel modelo);
+    Task<FinanceiroViewModel?> ObterFormularioAsync(int id);
+    Task<FinanceiroViewModel> NovoFormularioAsync(string tipo, int? casaId);
 }
