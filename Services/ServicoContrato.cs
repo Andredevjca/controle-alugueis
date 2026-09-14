@@ -11,7 +11,6 @@ public class ServicoContrato : IServicoContrato
 {
     private readonly IRepositorioContrato _repositorio;
     private readonly IRepositorioCasa _casas;
-
     private readonly IRepositorioInquilino _inquilinos;
 
     public ServicoContrato(

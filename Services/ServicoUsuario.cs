@@ -9,7 +9,6 @@ namespace SistemaAlugueis.Services;
 public class ServicoUsuario : IServicoUsuario
 {
     private readonly IRepositorioUsuario _repositorio;
-
     public ServicoUsuario(IRepositorioUsuario repositorio)
     {
         _repositorio = repositorio;

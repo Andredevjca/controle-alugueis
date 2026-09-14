@@ -41,7 +41,7 @@ public class UsuariosController : Controller
             return View(modelo);
         }
         TempData["Sucesso"] = "Usuário cadastrado.";
-return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Index));
     }
 
     public async Task<IActionResult> Editar(int id)

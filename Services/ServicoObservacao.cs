@@ -9,13 +9,9 @@ namespace SistemaAlugueis.Services;
 public class ServicoObservacao : IServicoObservacao
 {
     private readonly IRepositorioObservacao _repositorio;
-
     private readonly IRepositorioCasa _casas;
-
     private readonly IRepositorioInquilino _inquilinos;
-
     private readonly IRepositorioContrato _contratos;
-
     public ServicoObservacao(
         IRepositorioObservacao repositorio, IRepositorioCasa casas, IRepositorioInquilino inquilinos, IRepositorioContrato contratos)
     {

@@ -10,11 +10,9 @@ namespace SistemaAlugueis.Services;
 public class ServicoContaConsumo : IServicoContaConsumo
 {
     private readonly IRepositorioContaConsumo _repositorio;
-
     private readonly IRepositorioCasa _casas;
 
-    public ServicoContaConsumo(
-        IRepositorioContaConsumo repositorio, IRepositorioCasa casas)
+    public ServicoContaConsumo(IRepositorioContaConsumo repositorio, IRepositorioCasa casas)
     {
         _casas = casas;
         _repositorio = repositorio;

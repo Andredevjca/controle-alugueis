@@ -8,8 +8,7 @@ public class ServicoAutenticacao : IServicoAutenticacao
 {
     private readonly IRepositorioUsuario _usuarios;
 
-    public ServicoAutenticacao(
-        IRepositorioUsuario usuarios)
+    public ServicoAutenticacao(IRepositorioUsuario usuarios)
     {
         _usuarios = usuarios;
     }

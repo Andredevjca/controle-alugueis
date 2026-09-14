@@ -13,9 +13,7 @@ public class ServicoFinanceiro : IServicoFinanceiro
     private readonly IRepositorioFinanceiro _financeiro;
     private readonly IRepositorioCategoria _categorias;
     private readonly IRepositorioContrato _contratos;
-
     private readonly IRepositorioCasa _casas;
-
     private readonly IRepositorioInquilino _inquilinos;
 
     public ServicoFinanceiro(IRepositorioFinanceiro financeiro, IRepositorioCategoria categorias, IRepositorioContrato contratos, IRepositorioCasa casas, IRepositorioInquilino inquilinos)
