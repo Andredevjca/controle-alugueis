@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const corpo = document.body;
   const botaoSidebar = document.getElementById("botaoSidebar");
   const backdrop = document.getElementById("sidebarBackdrop");
@@ -30,6 +30,7 @@
     }
   });
 
+  const inicializarPagina = () => {
   const aplicarMascara = (entrada, formatador) => {
     entrada.addEventListener("input", () => {
       const posicao = entrada.selectionStart;
@@ -76,7 +77,8 @@
   });
 
   const modalExclusao = document.getElementById("modalExclusao");
-  if (modalExclusao) {
+  if (modalExclusao && !modalExclusao.dataset.inicializado) {
+    modalExclusao.dataset.inicializado = "true";
     modalExclusao.addEventListener("show.bs.modal", (evento) => {
       const botao = evento.relatedTarget;
       const form = modalExclusao.querySelector("form");
@@ -125,4 +127,7 @@
   };
   leituraAnterior?.addEventListener("input", calcularConsumo);
   leituraAtual?.addEventListener("input", calcularConsumo);
+  };
+  inicializarPagina();
+  document.addEventListener("app:navigated", inicializarPagina);
 })();

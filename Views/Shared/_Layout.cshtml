@@ -101,7 +101,7 @@
                 </div>
             </div>
         </header>
-        <main class="app-main">
+        <main class="app-main" id="app-page" tabindex="-1">
             @if (TempData["Sucesso"] is string sucesso)
             {
                 <div class="alert alert-success">@sucesso</div>
@@ -137,6 +137,7 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/navigation.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -483,3 +483,16 @@ body.login-body .login-card .campo {
 body.login-body .login-btn {
   border-radius: var(--app-button-radius);
 }
+
+.app-loading { cursor: progress; }
+.app-loading::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sidebar-active);
+  z-index: 2000;
+}
+#app-page:focus { outline: none; }
