@@ -1,7 +1,6 @@
-using SistemaAlugueis.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using SistemaAlugueis.Helpers;
+using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Controllers;

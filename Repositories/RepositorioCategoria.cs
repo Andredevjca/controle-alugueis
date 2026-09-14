@@ -1,6 +1,6 @@
-using SistemaAlugueis.Interfaces.Repositories;
 using Dapper;
 using SistemaAlugueis.Infraestrutura;
+using SistemaAlugueis.Interfaces.Repositories;
 using SistemaAlugueis.Models;
 
 namespace SistemaAlugueis.Repositories;

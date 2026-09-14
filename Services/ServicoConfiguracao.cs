@@ -1,6 +1,5 @@
-using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.Interfaces.Repositories;
-using SistemaAlugueis.Models;
+using SistemaAlugueis.Interfaces.Services;
 using SistemaAlugueis.ViewModels;
 
 namespace SistemaAlugueis.Services;
