@@ -10,8 +10,7 @@ public class RepositorioContaConsumo : IRepositorioContaConsumo
 {
     private readonly ConexaoBanco _conexao;
 
-    public RepositorioContaConsumo(
-        ConexaoBanco conexao)
+    public RepositorioContaConsumo(ConexaoBanco conexao)
     {
         _conexao = conexao;
     }

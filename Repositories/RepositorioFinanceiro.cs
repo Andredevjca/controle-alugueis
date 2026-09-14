@@ -10,8 +10,7 @@ public class RepositorioFinanceiro : IRepositorioFinanceiro
 {
     private readonly ConexaoBanco _conexao;
 
-    public RepositorioFinanceiro(
-        ConexaoBanco conexao)
+    public RepositorioFinanceiro(ConexaoBanco conexao)
     {
         _conexao = conexao;
     }
