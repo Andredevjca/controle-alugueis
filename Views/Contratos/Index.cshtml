@@ -34,7 +34,7 @@
                     <th>Data final</th>
                     <th>Valor</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th class="alinhar_a_direita">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,7 +48,7 @@
                         <td>@Formatador.Data(item.DataFim ?? item.DataTermino)</td>
                         <td>@Formatador.Moeda(item.ValorAluguel)</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
-                        <td class="text-nowrap">
+                        <td class="text-nowrap alinhar_a_direita">
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
                             @if (item.Status == StatusContrato.Ativo)
                             {

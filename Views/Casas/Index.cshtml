@@ -37,7 +37,7 @@
                     <th>Valor aluguel</th>
                     <th>Inquilino atual</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th class="alinhar_a_direita">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,7 +49,7 @@
                         <td>@Formatador.Moeda(item.ValorAluguel)</td>
                         <td>@(item.InquilinoAtual ?? "-")</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
-                        <td class="text-nowrap">
+                        <td class="text-nowrap alinhar_a_direita">
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id" title="Visualizar"><i class="bi bi-eye"></i></a>
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Excluir", new { id = item.Id })" data-mensagem="Tem certeza que deseja excluir esta casa?"><i class="bi bi-trash"></i></button>

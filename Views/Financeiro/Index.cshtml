@@ -62,7 +62,7 @@
                     <th>Vencimento</th>
                     <th>Valor</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th class="alinhar_a_direita">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,7 +86,7 @@
                         <td>@Formatador.Data(item.Vencimento)</td>
                         <td>@Formatador.Moeda(item.Valor)</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
-                        <td class="text-nowrap">
+                        <td class="text-nowrap alinhar_a_direita">
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
                             @if (item.Status is not ("Pago" or "Cancelado"))
                             {

@@ -21,7 +21,7 @@
                     <th>WhatsApp</th>
                     <th>E-mail</th>
                     <th>Situação</th>
-                    <th>Ações</th>
+                    <th class="alinhar_a_direita">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -34,7 +34,7 @@
                         <td>@item.Whatsapp</td>
                         <td>@item.Email</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Situacao == "Alugando" ? StatusCasa.Alugada : StatusCasa.Disponivel)">@item.Situacao</span></td>
-                        <td class="text-nowrap">
+                        <td class="text-nowrap alinhar_a_direita">
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
                             <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
                             <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Excluir", new { id = item.Id })"><i class="bi bi-trash"></i></button>

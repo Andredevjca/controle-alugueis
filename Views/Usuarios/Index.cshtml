@@ -15,7 +15,7 @@
                     <th>E-mail</th>
                     <th>Perfil</th>
                     <th>Situação</th>
-                    <th></th>
+                    <th class="alinhar_a_direita">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,7 +26,7 @@
                         <td>@item.Email</td>
                         <td>@item.Perfil</td>
                         <td><span class="status-badge @(item.Ativo ? "status-pago" : "status-cancelado")">@(item.Ativo ? "Ativo" : "Inativo")</span></td>
-                        <td><a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a></td>
+                        <td class="alinhar_a_direita"><a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a></td>
                     </tr>
                 }
             </tbody>
