@@ -9,17 +9,17 @@
     </div>
     <div class="d-flex gap-2">
         <span class="status-badge @Formatador.ClasseStatus(casa.Status) align-self-center">@casa.Status</span>
-        <a class="btn btn-outline-secondary btn-modern" asp-action="Editar" asp-route-id="@casa.Id"><i class="bi bi-pencil"></i> Editar</a>
+        <a class="btn btn-outline-secondary btn-modern" asp-action="Editar" asp-route-id="@casa.Id"><i class="fa-solid fa-pen"></i> Editar</a>
     </div>
 </div>
 <nav aria-label="Seções da casa" class="casa-tabs mb-3">
     <ul class="nav">
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "resumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="resumo" aria-current="@(Model.Aba == "resumo" ? "page" : null)"><i class="bi bi-house" aria-hidden="true"></i> Resumo</a></li>
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "contrato" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="contrato" aria-current="@(Model.Aba == "contrato" ? "page" : null)"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Contrato</a></li>
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "financeiro" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="financeiro" aria-current="@(Model.Aba == "financeiro" ? "page" : null)"><i class="bi bi-cash-stack" aria-hidden="true"></i> Financeiro</a></li>
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "consumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="consumo" aria-current="@(Model.Aba == "consumo" ? "page" : null)"><i class="bi bi-lightning-charge" aria-hidden="true"></i> Água/Luz</a></li>
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "observacoes" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="observacoes" aria-current="@(Model.Aba == "observacoes" ? "page" : null)"><i class="bi bi-chat-left-text" aria-hidden="true"></i> Observações</a></li>
-        <li class="nav-item"><a class="nav-link @(Model.Aba == "historico" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="historico" aria-current="@(Model.Aba == "historico" ? "page" : null)"><i class="bi bi-clock-history" aria-hidden="true"></i> Histórico</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "resumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="resumo" aria-current="@(Model.Aba == "resumo" ? "page" : null)"><i class="fa-solid fa-house" aria-hidden="true"></i> Resumo</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "contrato" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="contrato" aria-current="@(Model.Aba == "contrato" ? "page" : null)"><i class="fa-solid fa-file-lines" aria-hidden="true"></i> Contrato</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "financeiro" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="financeiro" aria-current="@(Model.Aba == "financeiro" ? "page" : null)"><i class="fa-solid fa-money-bill-wave" aria-hidden="true"></i> Financeiro</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "consumo" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="consumo" aria-current="@(Model.Aba == "consumo" ? "page" : null)"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Água/Luz</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "observacoes" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="observacoes" aria-current="@(Model.Aba == "observacoes" ? "page" : null)"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i> Observações</a></li>
+        <li class="nav-item"><a class="nav-link @(Model.Aba == "historico" ? "active" : "")" asp-action="Detalhes" asp-route-id="@casa.Id" asp-route-aba="historico" aria-current="@(Model.Aba == "historico" ? "page" : null)"><i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i> Histórico</a></li>
     </ul>
 </nav>
 
@@ -155,8 +155,8 @@
 @if (Model.Aba == "consumo")
 {
     <div class="d-flex gap-2 mb-3">
-        <a class="btn btn-success btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua" asp-route-casaId="@casa.Id"><i class="bi bi-droplet"></i> Água</a>
-        <a class="btn btn-outline-secondary btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz" asp-route-casaId="@casa.Id"><i class="bi bi-lightning"></i> Luz</a>
+        <a class="btn btn-success btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua" asp-route-casaId="@casa.Id"><i class="fa-solid fa-droplet"></i> Água</a>
+        <a class="btn btn-outline-secondary btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz" asp-route-casaId="@casa.Id"><i class="fa-solid fa-bolt"></i> Luz</a>
     </div>
     <div class="row g-3 mb-3">
         <div class="col-md-6">

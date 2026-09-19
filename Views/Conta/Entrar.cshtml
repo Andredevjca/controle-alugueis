@@ -7,7 +7,7 @@
     <aside class="login-aside">
         <div>
             <div class="login-brand">
-                <div class="login-logo"><i class="bi bi-houses"></i></div>
+                <div class="login-logo"><i class="fa-solid fa-house-chimney"></i></div>
                 <div>
                     <strong>Controle de Aluguéis</strong>
                     <small>Administração imobiliária</small>
@@ -18,10 +18,10 @@
                 <h2>Seus imóveis. Tudo em ordem.</h2>
                 <p>Gerencie casas, contratos, inquilinos e o financeiro em um só lugar.</p>
                 <ul class="login-features">
-                    <li><i class="bi bi-house"></i> Casas e contratos</li>
-                    <li><i class="bi bi-people"></i> Histórico de inquilinos</li>
-                    <li><i class="bi bi-cash-stack"></i> Receitas e despesas</li>
-                    <li><i class="bi bi-bar-chart"></i> Relatórios e vencimentos</li>
+                    <li><i class="fa-solid fa-house"></i> Casas e contratos</li>
+                    <li><i class="fa-solid fa-users"></i> Histórico de inquilinos</li>
+                    <li><i class="fa-solid fa-money-bill-wave"></i> Receitas e despesas</li>
+                    <li><i class="fa-solid fa-chart-column"></i> Relatórios e vencimentos</li>
                 </ul>
             </div>
         </div>
@@ -31,7 +31,7 @@
 
         <main class="login-main">
             <div class="login-card">
-                <div class="login-access-icon"><i class="bi bi-person-lock" aria-hidden="true"></i></div>
+                <div class="login-access-icon"><i class="fa-solid fa-user-lock" aria-hidden="true"></i></div>
                 <span class="login-eyebrow">BEM-VINDO DE VOLTA</span>
                 <h1>Acessar o sistema</h1>
                 <p class="sub">Informe seu e-mail e senha para continuar</p>
@@ -41,7 +41,7 @@
                     <div class="mb-3">
                         <label asp-for="Email"></label>
                         <div class="campo">
-                            <span><i class="bi bi-envelope"></i></span>
+                            <span><i class="fa-solid fa-envelope"></i></span>
                             <input asp-for="Email" placeholder="seu@email.com" autocomplete="username" />
                         </div>
                         <span asp-validation-for="Email" class="erro"></span>
@@ -49,7 +49,7 @@
                     <div class="mb-3">
                         <label asp-for="Senha"></label>
                         <div class="campo">
-                            <span><i class="bi bi-lock"></i></span>
+                            <span><i class="fa-solid fa-lock"></i></span>
                             <input asp-for="Senha" autocomplete="current-password" />
                         </div>
                         <span asp-validation-for="Senha" class="erro"></span>
@@ -58,7 +58,7 @@
                         <input asp-for="Lembrar" />
                         <span>Lembrar-me</span>
                     </label>
-                    <button type="submit" class="login-btn">Entrar no sistema <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
+                    <button type="submit" class="login-btn">Entrar no sistema <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
                 </form>
                 <div class="login-hint">
                     Usuário inicial: <strong>admin@sistema.com</strong><br />

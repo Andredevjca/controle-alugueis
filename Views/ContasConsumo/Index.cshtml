@@ -5,8 +5,8 @@
         <p class="text-muted mb-0">Consumo, vencimentos e pagamentos</p>
     </div>
     <div class="d-flex gap-2">
-        <a class="btn btn-success btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua"><i class="bi bi-droplet"></i> Água</a>
-        <a class="btn btn-outline-secondary btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz"><i class="bi bi-lightning"></i> Luz</a>
+        <a class="btn btn-success btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua"><i class="fa-solid fa-droplet"></i> Água</a>
+        <a class="btn btn-outline-secondary btn-modern" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz"><i class="fa-solid fa-bolt"></i> Luz</a>
     </div>
 </div>
 <form class="content-card p-3 mb-3" method="get">
@@ -69,11 +69,11 @@
                         <td>@Formatador.Data(item.DataPagamento)</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
                         <td class="text-nowrap alinhar_a_direita">
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a>
                             @if (item.Status is not ("Pago" or "Cancelado"))
                             {
                                 <form asp-action="Pagar" asp-route-id="@item.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-success">Pagar</button></form>
-                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Cancelar", new { id = item.Id })" data-mensagem="Deseja cancelar esta conta?"><i class="bi bi-trash"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Cancelar", new { id = item.Id })" data-mensagem="Deseja cancelar esta conta?"><i class="fa-solid fa-trash-can"></i></button>
                             }
                         </td>
                     </tr>

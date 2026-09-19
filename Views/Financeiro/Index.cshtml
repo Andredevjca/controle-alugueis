@@ -87,10 +87,10 @@
                         <td>@Formatador.Moeda(item.Valor)</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
                         <td class="text-nowrap alinhar_a_direita">
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a>
                             @if (item.Status is not ("Pago" or "Cancelado"))
                             {
-                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Cancelar", new { id = item.Id })" data-mensagem="Deseja cancelar este lançamento?"><i class="bi bi-trash"></i></button>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Cancelar", new { id = item.Id })" data-mensagem="Deseja cancelar este lançamento?"><i class="fa-solid fa-trash-can"></i></button>
                                 <form asp-action="Pagar" asp-route-id="@item.Id" method="post" class="d-inline">@Html.AntiForgeryToken()<button class="btn btn-sm btn-success">Pagar</button></form>
                             }
                         </td>

@@ -4,7 +4,7 @@
         <h1>Usuários</h1>
         <p class="text-muted mb-0">Acesso ao painel administrativo</p>
     </div>
-    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="bi bi-plus-lg"></i> Novo usuário</a>
+    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="fa-solid fa-plus"></i> Novo usuário</a>
 </div>
 <div class="content-card p-3">
     <div class="table-responsive">
@@ -26,7 +26,7 @@
                         <td>@item.Email</td>
                         <td>@item.Perfil</td>
                         <td><span class="status-badge @(item.Ativo ? "status-pago" : "status-cancelado")">@(item.Ativo ? "Ativo" : "Inativo")</span></td>
-                        <td class="alinhar_a_direita"><a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a></td>
+                        <td class="alinhar_a_direita"><a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a></td>
                     </tr>
                 }
             </tbody>

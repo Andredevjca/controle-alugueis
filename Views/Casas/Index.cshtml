@@ -4,14 +4,14 @@
         <h1>Casas</h1>
         <p class="text-muted mb-0">Cadastro e situação dos imóveis</p>
     </div>
-    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="bi bi-plus-lg"></i> Nova casa</a>
+    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="fa-solid fa-plus"></i> Nova casa</a>
 </div>
 <form class="content-card p-3 mb-3" method="get">
     <div class="row g-2 align-items-end">
         <div class="col-md-6">
             <label class="form-label">Buscar casas...</label>
             <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
                 <input name="busca" value="@Model.Busca" class="form-control" placeholder="Nome, endereço, bairro..." />
             </div>
         </div>
@@ -50,9 +50,9 @@
                         <td>@(item.InquilinoAtual ?? "-")</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
                         <td class="text-nowrap alinhar_a_direita">
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id" title="Visualizar"><i class="bi bi-eye"></i></a>
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id" title="Editar"><i class="bi bi-pencil"></i></a>
-                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Excluir", new { id = item.Id })" data-mensagem="Tem certeza que deseja excluir esta casa?"><i class="bi bi-trash"></i></button>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id" title="Visualizar"><i class="fa-solid fa-eye"></i></a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id" title="Editar"><i class="fa-solid fa-pen"></i></a>
+                            <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalExclusao" data-url="@Url.Action("Excluir", new { id = item.Id })" data-mensagem="Tem certeza que deseja excluir esta casa?"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 }

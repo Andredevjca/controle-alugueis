@@ -13,49 +13,49 @@
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Total de casas</div><div class="value">@Model.TotalCasas</div></div>
-            <div class="icon-wrap bg-soft-blue"><i class="bi bi-house"></i></div>
+            <div class="icon-wrap bg-soft-blue"><i class="fa-solid fa-house"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Casas alugadas</div><div class="value">@Model.CasasAlugadas</div></div>
-            <div class="icon-wrap bg-soft-green"><i class="bi bi-house-check"></i></div>
+            <div class="icon-wrap bg-soft-green"><i class="fa-solid fa-house-circle-check"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Casas disponíveis</div><div class="value">@Model.CasasDisponiveis</div></div>
-            <div class="icon-wrap bg-soft-blue"><i class="bi bi-house-dash"></i></div>
+            <div class="icon-wrap bg-soft-blue"><i class="fa-solid fa-house-circle-xmark"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Total a receber no mês</div><div class="value">@Formatador.Moeda(Model.TotalReceberMes)</div></div>
-            <div class="icon-wrap bg-soft-green"><i class="bi bi-cash-stack"></i></div>
+            <div class="icon-wrap bg-soft-green"><i class="fa-solid fa-money-bill-wave"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Aluguéis atrasados</div><div class="value">@Model.QtdAlugueisAtrasados</div><small class="text-danger">@Formatador.Moeda(Model.TotalAtrasado)</small></div>
-            <div class="icon-wrap bg-soft-red"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="icon-wrap bg-soft-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Despesas do mês</div><div class="value">@Formatador.Moeda(Model.DespesasMes)</div></div>
-            <div class="icon-wrap bg-soft-yellow"><i class="bi bi-receipt"></i></div>
+            <div class="icon-wrap bg-soft-yellow"><i class="fa-solid fa-receipt"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Receitas do mês</div><div class="value">@Formatador.Moeda(Model.ReceitasMes)</div></div>
-            <div class="icon-wrap bg-soft-purple"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="icon-wrap bg-soft-purple"><i class="fa-solid fa-arrow-trend-up"></i></div>
         </div>
     </div>
     <div class="col-6 col-xl-3">
         <div class="card-dashboard d-flex justify-content-between">
             <div><div class="label">Saldo do mês</div><div class="value">@Formatador.Moeda(Model.SaldoMes)</div></div>
-            <div class="icon-wrap bg-soft-green"><i class="bi bi-wallet2"></i></div>
+            <div class="icon-wrap bg-soft-green"><i class="fa-solid fa-wallet"></i></div>
         </div>
     </div>
 </div>
@@ -73,12 +73,12 @@
                     </div>
                     <span class="status-badge @Formatador.ClasseStatus(casa.Status)">@casa.Status</span>
                 </div>
-                <p class="mb-1"><i class="bi bi-person"></i> @(casa.InquilinoAtual ?? "Sem inquilino")</p>
+                <p class="mb-1"><i class="fa-solid fa-user"></i> @(casa.InquilinoAtual ?? "Sem inquilino")</p>
                 <p class="mb-1"><strong>@Formatador.Moeda(casa.ValorAluguel)</strong></p>
                 <p class="mb-2 text-muted small">Vencimento: dia @casa.DiaVencimento</p>
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="status-badge @Formatador.ClasseStatus(casa.SituacaoFinanceira)">@casa.SituacaoFinanceira</span>
-                    <a class="btn btn-sm btn-outline-success btn-modern" asp-controller="Casas" asp-action="Detalhes" asp-route-id="@casa.Id"><i class="bi bi-eye"></i> Visualizar</a>
+                    <a class="btn btn-sm btn-outline-success btn-modern" asp-controller="Casas" asp-action="Detalhes" asp-route-id="@casa.Id"><i class="fa-solid fa-eye"></i> Visualizar</a>
                 </div>
             </div>
         </div>

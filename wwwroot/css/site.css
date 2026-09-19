@@ -35,6 +35,10 @@ body {
     --bs-btn-border-radius: var(--app-button-radius);
     --bs-btn-padding-y: var(--app-button-padding-y);
     --bs-btn-padding-x: var(--app-button-padding-x);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
 }
 
 .dropdown-menu {
@@ -526,12 +530,20 @@ body.sidebar-open .sidebar-backdrop {
 }
 
 /* Icones acompanham a escala compacta dos textos. */
-.bi {
+.fa-solid {
     font-size: var(--app-icon-size);
 }
 
-.logo-mark .bi,
-.login-logo .bi {
+.btn > .fa-solid {
+    flex-shrink: 0;
+    width: 1.25em;
+    font-size: 1em;
+    line-height: inherit;
+    text-align: center;
+}
+
+.logo-mark .fa-solid,
+.login-logo .fa-solid {
     font-size: var(--app-brand-icon-size);
 }
 

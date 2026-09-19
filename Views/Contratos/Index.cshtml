@@ -1,7 +1,7 @@
 @model ContratoListaViewModel
 <div class="page-header">
     <div><h1>Contratos</h1><p class="text-muted mb-0">Contratos ativos, encerrados e histórico</p></div>
-    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="bi bi-plus-lg"></i> Novo contrato</a>
+    <a class="btn btn-success btn-modern" asp-action="Criar"><i class="fa-solid fa-plus"></i> Novo contrato</a>
 </div>
 <form class="content-card p-3 mb-3" method="get">
     <div class="row g-2">
@@ -49,10 +49,10 @@
                         <td>@Formatador.Moeda(item.ValorAluguel)</td>
                         <td><span class="status-badge @Formatador.ClasseStatus(item.Status)">@item.Status</span></td>
                         <td class="text-nowrap alinhar_a_direita">
-                            <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="bi bi-eye"></i></a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-action="Detalhes" asp-route-id="@item.Id"><i class="fa-solid fa-eye"></i></a>
                             @if (item.Status == StatusContrato.Ativo)
                             {
-                                <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="bi bi-pencil"></i></a>
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Editar" asp-route-id="@item.Id"><i class="fa-solid fa-pen"></i></a>
                                 <a class="btn btn-sm btn-outline-danger" asp-action="Encerrar" asp-route-id="@item.Id">Encerrar</a>
                             }
                         </td>
