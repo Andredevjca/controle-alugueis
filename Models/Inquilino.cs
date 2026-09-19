@@ -13,6 +13,8 @@ public class Inquilino
     public string? Profissao { get; set; }
     public decimal? Renda { get; set; }
     public string? EnderecoAnterior { get; set; }
+    public string? IdentificacaoContaAgua { get; set; }
+    public string? IdentificacaoContaLuz { get; set; }
     public string? Observacoes { get; set; }
     public bool Ativo { get; set; } = true;
     public DateTime DataCadastro { get; set; }

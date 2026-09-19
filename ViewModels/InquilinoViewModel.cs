@@ -57,6 +57,14 @@ public class InquilinoViewModel
     [Display(Name = "Endereço anterior")]
     public string? EnderecoAnterior { get; set; }
 
+    [Display(Name = "Identificação da conta de água")]
+    [StringLength(80, ErrorMessage = "Informe no máximo 80 caracteres.")]
+    public string? IdentificacaoContaAgua { get; set; }
+
+    [Display(Name = "Identificação da conta de luz")]
+    [StringLength(80, ErrorMessage = "Informe no máximo 80 caracteres.")]
+    public string? IdentificacaoContaLuz { get; set; }
+
     [Display(Name = "Observações")]
     public string? Observacoes { get; set; }
 }

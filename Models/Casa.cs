@@ -18,6 +18,8 @@ public class Casa
     public int QtdBanheiros { get; set; }
     public int QtdVagas { get; set; }
     public string Status { get; set; } = "Disponível";
+    public string? NumeroMedidorAgua { get; set; }
+    public string? NumeroMedidorLuz { get; set; }
     public string? Observacoes { get; set; }
     public bool Ativo { get; set; } = true;
     public DateTime DataCadastro { get; set; }

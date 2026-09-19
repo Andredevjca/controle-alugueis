@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using SistemaAlugueis.Dependecias;
+using SistemaAlugueis.Infraestrutura;
 using SistemaAlugueis.Interfaces.Services;
 using System.Diagnostics;
 using System.Globalization;
@@ -40,6 +41,9 @@ var app = builder.Build();
 
 using (var escopo = app.Services.CreateScope())
 {
+    var atualizador = escopo.ServiceProvider.GetRequiredService<AtualizadorBanco>();
+    await atualizador.AtualizarAsync();
+
     var autenticacao = escopo.ServiceProvider.GetRequiredService<IServicoAutenticacao>();
     await autenticacao.GarantirAdministradorAsync();
 }

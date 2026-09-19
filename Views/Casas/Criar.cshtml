@@ -79,6 +79,17 @@
             <label asp-for="QtdVagas" class="form-label"></label>
             <input asp-for="QtdVagas" class="form-control" />
         </div>
+        <div class="col-12"><h2 class="h6 mt-3">Água e luz</h2><p class="text-muted mb-0">Informe os números dos medidores instalados na casa.</p></div>
+        <div class="col-md-6">
+            <label asp-for="NumeroMedidorAgua" class="form-label"></label>
+            <input asp-for="NumeroMedidorAgua" class="form-control" maxlength="80" />
+            <span asp-validation-for="NumeroMedidorAgua" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="NumeroMedidorLuz" class="form-label"></label>
+            <input asp-for="NumeroMedidorLuz" class="form-control" maxlength="80" />
+            <span asp-validation-for="NumeroMedidorLuz" class="text-danger"></span>
+        </div>
         <div class="col-12">
             <label asp-for="Observacoes" class="form-label"></label>
             <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>

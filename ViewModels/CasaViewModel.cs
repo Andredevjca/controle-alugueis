@@ -60,6 +60,14 @@ public class CasaViewModel
     [Display(Name = "Status")]
     public string Status { get; set; } = StatusCasa.Disponivel;
 
+    [Display(Name = "Número do medidor de água")]
+    [StringLength(80, ErrorMessage = "Informe no máximo 80 caracteres.")]
+    public string? NumeroMedidorAgua { get; set; }
+
+    [Display(Name = "Número do medidor de luz")]
+    [StringLength(80, ErrorMessage = "Informe no máximo 80 caracteres.")]
+    public string? NumeroMedidorLuz { get; set; }
+
     [Display(Name = "Observações")]
     public string? Observacoes { get; set; }
 }

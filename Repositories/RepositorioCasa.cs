@@ -20,6 +20,8 @@ public class RepositorioCasa : IRepositorioCasa
         c.complemento AS Complemento, c.bairro AS Bairro, c.cidade AS Cidade, c.estado AS Estado,
         c.valor_aluguel AS ValorAluguel, c.dia_vencimento AS DiaVencimento, c.area_m2 AS AreaM2,
         c.qtd_quartos AS QtdQuartos, c.qtd_banheiros AS QtdBanheiros, c.qtd_vagas AS QtdVagas,
+        c.numero_medidor_agua AS NumeroMedidorAgua,
+        c.numero_medidor_luz AS NumeroMedidorLuz,
         c.status AS Status, c.observacoes AS Observacoes, c.ativo AS Ativo, c.data_cadastro AS DataCadastro,
         i.nome_completo AS InquilinoAtual, ct.id AS ContratoAtualId";
 
@@ -80,9 +82,9 @@ public class RepositorioCasa : IRepositorioCasa
         using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
             INSERT INTO casas (nome, cep, endereco, numero, complemento, bairro, cidade, estado, valor_aluguel,
-                dia_vencimento, area_m2, qtd_quartos, qtd_banheiros, qtd_vagas, status, observacoes, ativo)
+                dia_vencimento, area_m2, qtd_quartos, qtd_banheiros, qtd_vagas, status, numero_medidor_agua, numero_medidor_luz, observacoes, ativo)
             VALUES (@Nome, @Cep, @Endereco, @Numero, @Complemento, @Bairro, @Cidade, @Estado, @ValorAluguel,
-                @DiaVencimento, @AreaM2, @QtdQuartos, @QtdBanheiros, @QtdVagas, @Status, @Observacoes, 1);
+                @DiaVencimento, @AreaM2, @QtdQuartos, @QtdBanheiros, @QtdVagas, @Status, @NumeroMedidorAgua, @NumeroMedidorLuz, @Observacoes, 1);
             SELECT LAST_INSERT_ID();", casa);
     }
 
@@ -93,7 +95,7 @@ public class RepositorioCasa : IRepositorioCasa
             UPDATE casas SET nome=@Nome, cep=@Cep, endereco=@Endereco, numero=@Numero, complemento=@Complemento,
                 bairro=@Bairro, cidade=@Cidade, estado=@Estado, valor_aluguel=@ValorAluguel, dia_vencimento=@DiaVencimento,
                 area_m2=@AreaM2, qtd_quartos=@QtdQuartos, qtd_banheiros=@QtdBanheiros, qtd_vagas=@QtdVagas,
-                status=@Status, observacoes=@Observacoes
+                status=@Status, numero_medidor_agua=@NumeroMedidorAgua, numero_medidor_luz=@NumeroMedidorLuz, observacoes=@Observacoes
             WHERE id=@Id", casa);
     }
 

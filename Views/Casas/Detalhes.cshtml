@@ -154,6 +154,23 @@
 
 @if (Model.Aba == "consumo")
 {
+<div class="content-card p-3 mb-3">
+    <h2 class="h6">Identificação de água e luz</h2>
+    <p class="text-muted">Use estes dados para consultar pendências diretamente com os fornecedores.</p>
+    <div class="row g-3">
+        <div class="col-md-6 text-break">
+            <h3 class="h6">Água</h3>
+            <p>Identificação da conta: <strong>@(Model.InquilinoAtual?.IdentificacaoContaAgua ?? "Não informada")</strong></p>
+            <p class="mb-0">Medidor da casa: <strong>@(Model.Casa?.NumeroMedidorAgua ?? "Não informado")</strong></p>
+        </div>
+        <div class="col-md-6 text-break">
+            <h3 class="h6">Luz</h3>
+            <p>Identificação da conta: <strong>@(Model.InquilinoAtual?.IdentificacaoContaLuz ?? "Não informada")</strong></p>
+            <p class="mb-0">Medidor da casa: <strong>@(Model.Casa?.NumeroMedidorLuz ?? "Não informado")</strong></p>
+        </div>
+    </div>
+</div>
+    <p class="text-muted">Inquilino atual: @(Model.InquilinoAtual?.NomeCompleto ?? "Sem contrato ativo")</p>
     <div class="d-flex gap-2 mb-3">
         <a class="btn btn-success btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Agua" asp-route-casaId="@casa.Id"><i class="fa-solid fa-droplet"></i> Água</a>
         <a class="btn btn-outline-secondary btn-modern" asp-controller="ContasConsumo" asp-action="Criar" asp-route-tipo="@TipoConsumo.Luz" asp-route-casaId="@casa.Id"><i class="fa-solid fa-bolt"></i> Luz</a>

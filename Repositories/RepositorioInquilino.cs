@@ -19,6 +19,8 @@ public class RepositorioInquilino : IRepositorioInquilino
         i.id AS Id, i.nome_completo AS NomeCompleto, i.cpf AS Cpf, i.rg AS Rg,
         i.data_nascimento AS DataNascimento, i.telefone AS Telefone, i.whatsapp AS Whatsapp,
         i.email AS Email, i.profissao AS Profissao, i.renda AS Renda, i.endereco_anterior AS EnderecoAnterior,
+        i.identificacao_conta_agua AS IdentificacaoContaAgua,
+        i.identificacao_conta_luz AS IdentificacaoContaLuz,
         i.observacoes AS Observacoes, i.ativo AS Ativo, i.data_cadastro AS DataCadastro,
         ca.nome AS CasaAtual,
         CASE WHEN ct.id IS NULL THEN 'Disponível' ELSE 'Alugando' END AS Situacao";
@@ -72,8 +74,8 @@ public class RepositorioInquilino : IRepositorioInquilino
     {
         using var db = _conexao.Criar();
         return await db.ExecuteScalarAsync<int>(@"
-            INSERT INTO inquilinos (nome_completo, cpf, rg, data_nascimento, telefone, whatsapp, email, profissao, renda, endereco_anterior, observacoes, ativo)
-            VALUES (@NomeCompleto, @Cpf, @Rg, @DataNascimento, @Telefone, @Whatsapp, @Email, @Profissao, @Renda, @EnderecoAnterior, @Observacoes, 1);
+            INSERT INTO inquilinos (nome_completo, cpf, rg, data_nascimento, telefone, whatsapp, email, profissao, renda, endereco_anterior, identificacao_conta_agua, identificacao_conta_luz, observacoes, ativo)
+            VALUES (@NomeCompleto, @Cpf, @Rg, @DataNascimento, @Telefone, @Whatsapp, @Email, @Profissao, @Renda, @EnderecoAnterior, @IdentificacaoContaAgua, @IdentificacaoContaLuz, @Observacoes, 1);
             SELECT LAST_INSERT_ID();", inquilino);
     }
 
@@ -83,7 +85,7 @@ public class RepositorioInquilino : IRepositorioInquilino
         await db.ExecuteAsync(@"
             UPDATE inquilinos SET nome_completo=@NomeCompleto, cpf=@Cpf, rg=@Rg, data_nascimento=@DataNascimento,
                 telefone=@Telefone, whatsapp=@Whatsapp, email=@Email, profissao=@Profissao, renda=@Renda,
-                endereco_anterior=@EnderecoAnterior, observacoes=@Observacoes
+                endereco_anterior=@EnderecoAnterior, identificacao_conta_agua=@IdentificacaoContaAgua, identificacao_conta_luz=@IdentificacaoContaLuz, observacoes=@Observacoes
             WHERE id=@Id", inquilino);
     }
 

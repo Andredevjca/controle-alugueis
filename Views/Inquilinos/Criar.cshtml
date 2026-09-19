@@ -47,6 +47,17 @@
             <label asp-for="EnderecoAnterior" class="form-label"></label>
             <input asp-for="EnderecoAnterior" class="form-control" />
         </div>
+        <div class="col-12"><h2 class="h6 mt-3">Água e luz</h2><p class="text-muted mb-0">Informe o código de cliente, matrícula ou instalação usado pelo fornecedor.</p></div>
+        <div class="col-md-6">
+            <label asp-for="IdentificacaoContaAgua" class="form-label"></label>
+            <input asp-for="IdentificacaoContaAgua" class="form-control" maxlength="80" />
+            <span asp-validation-for="IdentificacaoContaAgua" class="text-danger"></span>
+        </div>
+        <div class="col-md-6">
+            <label asp-for="IdentificacaoContaLuz" class="form-label"></label>
+            <input asp-for="IdentificacaoContaLuz" class="form-control" maxlength="80" />
+            <span asp-validation-for="IdentificacaoContaLuz" class="text-danger"></span>
+        </div>
         <div class="col-12">
             <label asp-for="Observacoes" class="form-label"></label>
             <textarea asp-for="Observacoes" class="form-control" rows="3"></textarea>

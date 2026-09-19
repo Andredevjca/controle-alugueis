@@ -101,6 +101,8 @@ public class ServicoInquilino : IServicoInquilino
         Profissao = i.Profissao,
         Renda = i.Renda,
         EnderecoAnterior = i.EnderecoAnterior,
+        IdentificacaoContaAgua = i.IdentificacaoContaAgua,
+        IdentificacaoContaLuz = i.IdentificacaoContaLuz,
         Observacoes = i.Observacoes
     };
 
@@ -117,6 +119,8 @@ public class ServicoInquilino : IServicoInquilino
         Profissao = m.Profissao,
         Renda = m.Renda,
         EnderecoAnterior = m.EnderecoAnterior,
+        IdentificacaoContaAgua = m.IdentificacaoContaAgua?.Trim(),
+        IdentificacaoContaLuz = m.IdentificacaoContaLuz?.Trim(),
         Observacoes = m.Observacoes
     };
 

@@ -36,6 +36,22 @@
     </div>
 </div>
 <div class="content-card p-3 mb-3">
+    <h2 class="h6">Identificação de água e luz</h2>
+    <p class="text-muted">Use estes dados para consultar pendências diretamente com os fornecedores.</p>
+    <div class="row g-3">
+        <div class="col-md-6 text-break">
+            <h3 class="h6">Água</h3>
+            <p>Identificação da conta: <strong>@(Model.Inquilino?.IdentificacaoContaAgua ?? "Não informada")</strong></p>
+            <p class="mb-0">Medidor da casa: <strong>@(Model.CasaAtual?.NumeroMedidorAgua ?? "Não informado")</strong></p>
+        </div>
+        <div class="col-md-6 text-break">
+            <h3 class="h6">Luz</h3>
+            <p>Identificação da conta: <strong>@(Model.Inquilino?.IdentificacaoContaLuz ?? "Não informada")</strong></p>
+            <p class="mb-0">Medidor da casa: <strong>@(Model.CasaAtual?.NumeroMedidorLuz ?? "Não informado")</strong></p>
+        </div>
+    </div>
+</div>
+<div class="content-card p-3 mb-3">
     <h2 class="h6">Histórico de contratos e casas</h2>
     <div class="table-responsive">
         <table class="table table-modern">

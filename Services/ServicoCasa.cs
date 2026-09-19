@@ -158,6 +158,8 @@ public class ServicoCasa : IServicoCasa
         QtdBanheiros = casa.QtdBanheiros,
         QtdVagas = casa.QtdVagas,
         Status = casa.Status,
+        NumeroMedidorAgua = casa.NumeroMedidorAgua,
+        NumeroMedidorLuz = casa.NumeroMedidorLuz,
         Observacoes = casa.Observacoes
     };
 
@@ -179,6 +181,8 @@ public class ServicoCasa : IServicoCasa
         QtdBanheiros = m.QtdBanheiros,
         QtdVagas = m.QtdVagas,
         Status = m.Status,
+        NumeroMedidorAgua = m.NumeroMedidorAgua?.Trim(),
+        NumeroMedidorLuz = m.NumeroMedidorLuz?.Trim(),
         Observacoes = m.Observacoes
     };
 

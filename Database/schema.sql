@@ -61,6 +61,8 @@ CREATE TABLE casas (
   qtd_quartos INT NOT NULL DEFAULT 0,
   qtd_banheiros INT NOT NULL DEFAULT 0,
   qtd_vagas INT NOT NULL DEFAULT 0,
+  numero_medidor_agua VARCHAR(80) NULL,
+  numero_medidor_luz VARCHAR(80) NULL,
   status VARCHAR(30) NOT NULL DEFAULT 'Disponível',
   observacoes TEXT NULL,
   ativo TINYINT(1) NOT NULL DEFAULT 1,
@@ -79,6 +81,8 @@ CREATE TABLE inquilinos (
   profissao VARCHAR(80) NULL,
   renda DECIMAL(12,2) NULL,
   endereco_anterior VARCHAR(255) NULL,
+  identificacao_conta_agua VARCHAR(80) NULL,
+  identificacao_conta_luz VARCHAR(80) NULL,
   observacoes TEXT NULL,
   ativo TINYINT(1) NOT NULL DEFAULT 1,
   data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
