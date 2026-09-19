@@ -66,14 +66,13 @@
     {
         <div class="col-md-6 col-xl-4">
             <div class="card-imovel">
-                <div class="d-flex justify-content-between align-items-start mb-2">
+                <div class="d-flex justify-content-between align-items-start mb-0">
                     <div>
                         <h3>@casa.Nome</h3>
-                        <div class="text-muted small">@casa.Endereco</div>
                     </div>
                     <span class="status-badge @Formatador.ClasseStatus(casa.Status)">@casa.Status</span>
                 </div>
-                <p class="mb-1"><i class="fa-solid fa-user"></i> @(casa.InquilinoAtual ?? "Sem inquilino")</p>
+                <p class="mb-1">@(casa.InquilinoAtual ?? "Sem inquilino")</p>
                 <p class="mb-1"><strong>@Formatador.Moeda(casa.ValorAluguel)</strong></p>
                 <p class="mb-2 text-muted small">Vencimento: dia @casa.DiaVencimento</p>
                 <div class="d-flex justify-content-between align-items-center">
